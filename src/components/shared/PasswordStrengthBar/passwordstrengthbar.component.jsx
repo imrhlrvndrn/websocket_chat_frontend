@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAuthentication } from '../../../context';
 import { generateBars } from './passwordstrengthbar.utils';
 

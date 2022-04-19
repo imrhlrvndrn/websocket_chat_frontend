@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { activateAccount } from '../../../../http';
 import { useAuthentication, useTheme } from '../../../../context';
 

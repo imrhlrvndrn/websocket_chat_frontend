@@ -1,7 +1,8 @@
+import React, { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 // components
 import { loginUser } from '../../../http';
-import { Fragment, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthentication } from '../../../context';
 
 // styles

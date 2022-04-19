@@ -3,11 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     display: flex;
     flex-direction: column;
-<<<<<<< HEAD:client/src/components/Sidebar/StyledSidebar.js
-    width: ${(props) => (props.chatInfo === false ? '30%' : '25%')};
-=======
     width: 25%;
->>>>>>> d2dc5469003d066c59c60d20edd316092111578d:client/src/components/Sidebar/sidebar.styledcomponent.js
 
     .sidebar__header {
         display: flex;
@@ -65,7 +61,7 @@ export default styled.div`
         .addNewChat {
             padding: 2rem 1rem;
             text-align: center;
-            background-color: rgba(${(props) => props.theme.constants.colorBackground}, 0.2);
+            background-color: ${(props) => props.theme.colors.constants.primary.medium};
         }
     }
 `;

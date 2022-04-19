@@ -1,3 +1,6 @@
+import React from 'react';
+
+// styles
 import { StyledButton } from './button.styledcomponent';
 
 export const Button = (props) => {

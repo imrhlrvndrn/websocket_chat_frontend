@@ -1,3 +1,5 @@
+import React from 'react';
+
 // styles
 import { Flex, Text } from '../../../styledcomponents';
 import { Loader } from './loader.styledcomponent';

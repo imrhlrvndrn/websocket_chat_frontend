@@ -1,3 +1,6 @@
+import React from 'react';
+
+// styles
 import { Flex } from '../../../styledcomponents';
 import { ModalContainer } from './modal.styledcomponent';
 

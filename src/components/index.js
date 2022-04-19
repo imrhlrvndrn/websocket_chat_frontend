@@ -10,7 +10,7 @@ export { StepEmail } from './MultiStepForm/Register/StepEmail/stepemail.componen
 export { StepPassword } from './MultiStepForm/Register/StepPassword/steppassword.component';
 export { GroupName } from './MultiStepForm/CreateGroupChat/GroupName/groupname.component';
 export { AddMembers } from './MultiStepForm/CreateGroupChat/AddMembers/addmembers.component';
-export { Card, CardContent, CardHeader } from './Forms/Layout/formlayout';
+export { Card, CardContent, CardHeader } from './Forms/Layout/formlayout.component';
 export { Login } from './Forms/Login/login.component';
 export { Password } from './Forms/Password/password.component';
 export { Register } from './Forms/Register/register.component';

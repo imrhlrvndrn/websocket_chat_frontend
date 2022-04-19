@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import StyledSidebar from './sidebar.styledcomponent';
 
 // components
-import { Avatar, ChatCard } from '../';
+import { Avatar, ChatCard } from '..';
 import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../react_icons';
 import { createChat, getUserChats, searchUsers } from '../../http';
 import { useDebounce } from '../../hooks';
@@ -44,7 +44,7 @@ export const Sidebar = () => {
             } = await getUserChats(user?._id);
 
             if (success) {
-                setUserChats(data.chats);
+                setUserChats(data?.chats);
             }
         } catch (error) {
             console.error(error);

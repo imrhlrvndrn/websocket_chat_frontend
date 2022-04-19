@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EditIcon = ({ width, height, onClick }) => {
+export const EditIcon = ({ width, height, onClick }) => {
     return (
         <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -14,5 +14,3 @@ const EditIcon = ({ width, height, onClick }) => {
         </svg>
     );
 };
-
-export default EditIcon;

@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { StepAvatar, StepEmail, StepName, StepPassword } from '../..';
 import { useSteps } from '../../../hooks';
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTabs } from '../../hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
 
