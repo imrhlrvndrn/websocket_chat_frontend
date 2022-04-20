@@ -9,6 +9,7 @@ import { Container, Text, Flex } from '../../../../styledcomponents';
 // import { ArrowRight, EditIcon } from '../../../../react_icons';
 import { Button, Card, CardContent, CardHeader, Loader } from '../../../';
 import { EditIcon } from '../../../../react_icons';
+import { Modal } from '../../../Modals/Modal/modal.component';
 
 export const StepAvatar = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
@@ -63,90 +64,83 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
 
     if (isActivationInProgress)
         return (
-            <Card>
-                <CardContent>
-                    <Flex>
-                        <Loader message={`Activation in progress. Please wait...`} />
-                    </Flex>
-                </CardContent>
-            </Card>
+            <Modal>
+                <Flex>
+                    <Loader message={`Activation in progress. Please wait...`} />
+                </Flex>
+            </Modal>
         );
 
     return (
-        <Fragment>
-            <Card>
-                <CardHeader text={`${full_name.split(' ')[0]}, choose your avatar`} />
-                <CardContent>
-                    <Flex width='100%'>
-                        <Container
-                            style={{ position: 'relative' }}
-                            width='150px'
-                            height='150px'
-                            border='10px'
-                            borderRadius='50%'
-                            onClick={() => fileInputRef.current.click()}
-                        >
-                            <input
-                                onChange={captureImage}
-                                style={{ display: 'none' }}
-                                type='file'
-                                ref={fileInputRef}
-                            />
-                            <img
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    borderRadius: '50%',
-                                }}
-                                src={image}
-                                alt=''
-                            />
-                            <Flex
-                                padding='1rem'
-                                style={{
-                                    cursor: 'pointer',
-                                    borderRadius: '50%',
-                                    background: `${theme.colors.darkBackground}`,
-                                    width: 'max-content',
-                                    height: 'max-content',
-                                    position: 'absolute',
-                                    bottom: '0',
-                                    right: '0%',
-                                    transform: 'translateX(50%)',
-                                }}
-                            >
-                                {/* Add this Icon */}
-                                <EditIcon color={theme.colors.text} size={20} />
-                            </Flex>
-                        </Container>
+        <Modal>
+            <Flex width='100%'>
+                <Container
+                    style={{ position: 'relative' }}
+                    width='150px'
+                    height='150px'
+                    border='10px'
+                    borderRadius='50%'
+                    onClick={() => fileInputRef.current.click()}
+                >
+                    <input
+                        onChange={captureImage}
+                        style={{ display: 'none' }}
+                        type='file'
+                        ref={fileInputRef}
+                    />
+                    <img
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                        }}
+                        src={image}
+                        alt=''
+                    />
+                    <Flex
+                        padding='1rem'
+                        style={{
+                            cursor: 'pointer',
+                            borderRadius: '50%',
+                            background: `${theme.colors.darkBackground}`,
+                            width: 'max-content',
+                            height: 'max-content',
+                            position: 'absolute',
+                            bottom: '0',
+                            right: '0%',
+                            transform: 'translateX(50%)',
+                        }}
+                    >
+                        {/* Add this Icon */}
+                        <EditIcon color={theme.colors.text} size={20} />
                     </Flex>
-                    <form onSubmit={saveAndActivateAccount}>
-                        <Flex margin='4rem 0 0 0'>
-                            <Button type='button' variant='secondary' onClick={previousStep}>
-                                <Flex>
-                                    <Text weight='600' margin='0 1rem 0 0'>
-                                        Edit username
-                                    </Text>
-                                </Flex>
-                            </Button>
-                            <Button type='submit' disabled={!!!image}>
-                                <Flex>
-                                    <Text
-                                        weight='600'
-                                        margin='0 1rem 0 0'
-                                        color={theme.colors.constants.lightText}
-                                    >
-                                        Finish registration
-                                    </Text>
-                                    {/* Add this icon */}
-                                    {/* <ArrowRight size={30} /> */}
-                                </Flex>
-                            </Button>
+                </Container>
+            </Flex>
+            <form onSubmit={saveAndActivateAccount}>
+                <Flex margin='4rem 0 0 0'>
+                    <Button type='button' variant='secondary' onClick={previousStep}>
+                        <Flex>
+                            <Text weight='600' margin='0 1rem 0 0'>
+                                Edit username
+                            </Text>
                         </Flex>
-                    </form>
-                </CardContent>
-            </Card>
-        </Fragment>
+                    </Button>
+                    <Button type='submit' disabled={!!!image}>
+                        <Flex>
+                            <Text
+                                weight='600'
+                                margin='0 1rem 0 0'
+                                color={theme.colors.constants.lightText}
+                            >
+                                Finish registration
+                            </Text>
+                            {/* Add this icon */}
+                            {/* <ArrowRight size={30} /> */}
+                        </Flex>
+                    </Button>
+                </Flex>
+            </form>
+        </Modal>
     );
 };

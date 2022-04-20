@@ -1,17 +1,18 @@
+import { useDebounce } from '../../hooks';
+import { getDMChatName } from './sidebar.utils';
 import React, { useEffect, useState } from 'react';
+import { createChat, getUserChats, searchUsers } from '../../http';
+import { useAuthentication, useModalManager } from '../../context';
 
 // Styled conponents
 import StyledSidebar from './sidebar.styledcomponent';
 
 // components
-import { Avatar, ChatCard } from '..';
+import { Avatar, ChatCard, Button } from '..';
 import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../react_icons';
-import { createChat, getUserChats, searchUsers } from '../../http';
-import { useDebounce } from '../../hooks';
-import { useAuthentication } from '../../context';
-import { getDMChatName } from './sidebar.utils';
 
 export const Sidebar = () => {
+    const { showModal } = useModalManager();
     const [{ user }, authDispatch] = useAuthentication();
     const [search, setSearch] = useState({
         query: '',
@@ -85,11 +86,12 @@ export const Sidebar = () => {
                     height='45px'
                     imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
                 />
-                <div className='sidebar__header__icons'>
+                {/* <div className='sidebar__header__icons'>
                     <StoriesIcon />
                     <MessageIcon />
                     <MoreOptionsIcon />
-                </div>
+                </div> */}
+                <Button onClick={() => showModal('CREATE_NEW_GROUP_MODAL')}>New group</Button>
             </div>
             <div className='sidebarSearchContainer'>
                 <div className='sidebarSearchContainer__input'>

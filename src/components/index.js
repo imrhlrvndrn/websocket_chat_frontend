@@ -17,6 +17,7 @@ export { Register } from './Forms/Register/register.component';
 export { Tabs } from './Tabs/tabs.component';
 export { Modal } from './Modals/Modal/modal.component';
 export { ChatInformation } from './Modals/ChatInformation/chatinformation.component';
+// export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.component';
 export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.component';
 
 // shared

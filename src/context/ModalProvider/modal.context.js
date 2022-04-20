@@ -1,24 +1,27 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-export const MODAL_TYPES = {
-    CREATE_MODAL: '',
+// components
+import { CreateGroupChat } from '../../components';
+
+const MODAL_TYPES = {
+    CREATE_NEW_GROUP_MODAL: CreateGroupChat,
     DELETE_MODAL: '',
     UPDATE_MODAL: '',
 };
 
 const initialState = {
-    showModal: () => {},
+    showModal: (type, props) => {},
     hideModal: () => {},
     modal: {},
 };
 
-export const ModalContext = createContext(initialState);
+const ModalContext = createContext(initialState);
 
-export const useModalManager = useContext();
+export const useModalManager = () => useContext(ModalContext);
 
 export const ModalProvider = ({ children }) => {
-    const [modal, setModal] = useState();
-    const { type, props } = modal || {};
+    const [modal, setModal] = useState({ type: '', props: {} });
+    const { type, props } = modal;
 
     const showModal = (type, props = {}) => {
         setModal({
@@ -31,12 +34,12 @@ export const ModalProvider = ({ children }) => {
     const hideModal = () => {
         setModal({
             ...modal,
-            type: null,
+            type: '',
             props: {},
         });
     };
 
-    const renderComponent = () => {
+    const renderModal = () => {
         const ModalComponent = MODAL_TYPES[type];
         if (!type || !ModalComponent) {
             return null;
@@ -46,7 +49,7 @@ export const ModalProvider = ({ children }) => {
 
     return (
         <ModalContext.Provider value={{ showModal, hideModal, modal }}>
-            {renderComponent()}
+            {renderModal()}
             {children}
         </ModalContext.Provider>
     );

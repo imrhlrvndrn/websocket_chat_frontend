@@ -1,18 +1,30 @@
 import React from 'react';
+import { useModalManager, useTheme } from '../../../context';
 
 // styles
 import { Flex } from '../../../styledcomponents';
 import { ModalContainer } from './modal.styledcomponent';
 
-export const Modal = ({ modal, toggleModal }) => {
-    const Modal = modal;
+// components
+import { Card, CardContent, CardHeader } from '../..';
+
+export const Modal = ({
+    // variant,
+    children,
+    title = { visible: true, content: 'Modal Header' },
+}) => {
+    const [{ theme }] = useTheme();
+    const { hideModal } = useModalManager();
 
     return (
         <ModalContainer>
             <Flex height='100%'>
-                <Modal />
+                <Card style={{ zIndex: '1', backgroundColor: theme?.colors?.darkBackground }}>
+                    {title?.visible && <CardHeader text={title?.content} />}
+                    <CardContent>{children}</CardContent>
+                </Card>
             </Flex>
-            <div className='overlay' onClick={toggleModal}></div>
+            <div className='overlay' onClick={hideModal}></div>
         </ModalContainer>
     );
 };

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const ChatInformationModal = styled.div`
     width: 35%;
     z-index: 1;
-    /* padding: 2rem; */
     margin: 0 auto;
     border-radius: 10px;
     color: ${(props) => props.theme.colors.text};

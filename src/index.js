@@ -3,7 +3,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeProvider } from './styledcomponents';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AuthenticationProvider, ChatProvider, CustomThemeProvider } from './context';
+import {
+    AuthenticationProvider,
+    ChatProvider,
+    CustomThemeProvider,
+    ModalProvider,
+} from './context';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -12,7 +17,9 @@ ReactDOM.render(
                 <ThemeProvider>
                     <AuthenticationProvider>
                         <ChatProvider>
-                            <App />
+                            <ModalProvider>
+                                <App />
+                            </ModalProvider>
                         </ChatProvider>
                     </AuthenticationProvider>
                 </ThemeProvider>

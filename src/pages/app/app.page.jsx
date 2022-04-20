@@ -23,7 +23,7 @@ export const MainApp = ({ messages }) => {
                 <ChatWindow messages={messages} />
             </div>
             {/* <Modal modal={ChatInformation} toggleModal={() => {}} /> */}
-            <Modal modal={CreateGroupChat} toggleModal={() => {}} />
+            {/* <Modal modal={CreateGroupChat} toggleModal={() => {}} /> */}
         </StyledMainApp>
     );
 };

@@ -16,7 +16,7 @@ export const ChatCard = ({
     return (
         <StyledSidebarChat onClick={() => onClick()}>
             <Avatar margin='0 1rem 0 0' imgUrl={avatar} />
-            <Flex direction='column' style={{ flex: 1 }}>
+            <Flex direction='column' style={{ zIndex: 0, flex: 1 }}>
                 <Text as='h2' weight='bold'>
                     {title}
                 </Text>

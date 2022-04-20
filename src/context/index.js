@@ -10,3 +10,4 @@ export {
 } from './AuthenticationProvider/authentication.reducer';
 export { useChat, ChatProvider } from './ChatProvider/chat.context';
 export { chatReducers, initialChatState } from './ChatProvider/chat.reducer';
+export { useModalManager, ModalProvider } from './ModalProvider/modal.context';
