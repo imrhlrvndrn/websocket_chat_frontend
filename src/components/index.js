@@ -22,7 +22,8 @@ export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.compon
 
 // shared
 export { Link } from './shared/Link/link.component';
-export { Input, PasswordField } from './shared/Input/input.component';
+export { Option } from './shared/Option/option.component';
 export { Button } from './shared/Button/button.component';
+export { Input, PasswordField } from './shared/Input/input.component';
 export { LoaderComponent as Loader } from './shared/Loader/loader.component';
 export { PasswordStrengthBar } from './shared/PasswordStrengthBar/passwordstrengthbar.component';

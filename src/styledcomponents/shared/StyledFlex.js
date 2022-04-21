@@ -12,4 +12,5 @@ export const Flex = styled.div`
     justify-content: ${(props) => props.justify || 'center'};
     flex-grow: ${(props) => props.grow || '0'};
     flex-shrink: ${(props) => props.shrink || '0'};
+    flex-wrap: ${(props) => (props.wrap ? 'wrap' : 'no-wrap')};
 `;

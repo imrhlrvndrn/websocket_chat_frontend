@@ -11,16 +11,18 @@ import { Card, CardContent, CardHeader } from '../..';
 export const Modal = ({
     // variant,
     children,
-    title = { visible: true, content: 'Modal Header' },
+    title,
 }) => {
     const [{ theme }] = useTheme();
     const { hideModal } = useModalManager();
+
+    const { visible = true, content = 'Modal Header' } = title;
 
     return (
         <ModalContainer>
             <Flex height='100%'>
                 <Card style={{ zIndex: '1', backgroundColor: theme?.colors?.darkBackground }}>
-                    {title?.visible && <CardHeader text={title?.content} />}
+                    {visible && <CardHeader text={content} />}
                     <CardContent>{children}</CardContent>
                 </Card>
             </Flex>
