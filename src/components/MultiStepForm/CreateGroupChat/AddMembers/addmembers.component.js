@@ -8,6 +8,7 @@ import { Flex, Text } from '../../../../styledcomponents';
 
 // components
 import { Avatar, Option, Input, Button, Modal } from '../../..';
+import { CloseIcon } from '../../../../react_icons';
 
 export const AddMembers = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
@@ -48,6 +49,43 @@ export const AddMembers = ({ nextStep, previousStep }) => {
         }
     };
 
+    const renderSearchResults = () => {
+        if (search?.loading) return <Text>Searching users. Please wait... </Text>;
+        else if (!search?.loading && search?.results?.length > 0)
+            return search?.results?.map(
+                (user) =>
+                    !user?.is_selected && (
+                        <Option
+                            onClick={() => {
+                                setSearch((prevState) => ({
+                                    ...prevState,
+                                    results: prevState?.results?.map((selectedUser) =>
+                                        selectedUser?._id === user?._id
+                                            ? { ...selectedUser, is_selected: true }
+                                            : selectedUser
+                                    ),
+                                }));
+                                setSelectedUsers((prevState) => [...prevState, user]);
+                            }}
+                        >
+                            <Flex width='max-content'>
+                                <Avatar
+                                    width='30px'
+                                    height='30px'
+                                    margin='0 1rem 0 0'
+                                    imgUrl={user?.avatar}
+                                    altText={user?.full_name}
+                                />
+                                <Text width='max-content'>{user?.full_name}</Text>
+                            </Flex>
+                        </Option>
+                    )
+            );
+        else if (!search?.query) return null;
+        else if (!search?.loading && search?.results?.length === 0)
+            return <Text>No users found.</Text>;
+    };
+
     useEffect(() => {
         searchForUsers();
     }, [debouncedSearch]);
@@ -63,65 +101,44 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                     style={{ backgroundColor: theme?.colors?.mediumBackground }}
                 />
                 {/* Selected user pills */}
-                {selectedUsers?.length > 0 &&
-                    selectedUsers?.map((user) => (
-                        <Flex margin='1rem 1rem 1rem 0'>
-                            <Avatar
-                                width='30px'
-                                height='30px'
-                                margin='0 0.5rem 0 0'
-                                imgUrl={user?.avatar}
-                                altText={user?.full_name}
-                            />
-                            <Text size='body/small'>{user?.full_name}</Text>
-                        </Flex>
-                    ))}
+                <Flex wrap justify='flex-start' style={{maxWidth: '500px'}}>
+                    {selectedUsers?.length > 0 &&
+                        selectedUsers?.map((user) => (
+                            <Flex width='max-content' margin='1rem 1rem 1rem 0'>
+                                <Avatar
+                                    width='30px'
+                                    height='30px'
+                                    margin='0 0.5rem 0 0'
+                                    imgUrl={user?.avatar}
+                                    altText={user?.full_name}
+                                />
+                                <Text size='body/small' width='max-content'>
+                                    {user?.full_name}
+                                </Text>
+                                <CloseIcon
+                                    color={theme?.colors?.text}
+                                    onClick={() => {
+                                        setSearch((prevState) => ({
+                                            ...prevState,
+                                            results: prevState?.results?.map((selectedUser) =>
+                                                selectedUser?._id === user?._id
+                                                    ? { ...selectedUser, is_selected: false }
+                                                    : selectedUser
+                                            ),
+                                        }));
+                                        setSelectedUsers((prevState) =>
+                                            prevState.filter(
+                                                (selectedUser) => selectedUser._id !== user?._id
+                                            )
+                                        );
+                                    }}
+                                />
+                            </Flex>
+                        ))}
+                </Flex>
                 {/* Searched users */}
                 <Flex direction='column' margin='2rem 0'>
-                    {search?.loading ? (
-                        <Text>Searching users</Text>
-                    ) : (
-                        search?.results?.map(
-                            (user) =>
-                                !user?.is_selected && (
-                                    <Flex
-                                        margin='0 0 1rem 0'
-                                        onClick={() => {
-                                            setSearch((prevState) => ({
-                                                ...prevState,
-                                                results: prevState?.results?.map((selectedUser) =>
-                                                    selectedUser?._id === user?._id
-                                                        ? { ...selectedUser, is_selected: true }
-                                                        : { ...selectedUser, is_selected: false }
-                                                ),
-                                            }));
-                                            setSelectedUsers((prevState) => [...prevState, user]);
-                                        }}
-                                    >
-                                        <Avatar
-                                            width='40px'
-                                            height='40px'
-                                            margin='0 1rem 0 0'
-                                            imgUrl={user?.avatar}
-                                            altText={user?.full_name}
-                                        />
-                                        <Text>{user?.full_name}</Text>
-                                    </Flex>
-                                )
-                        )
-                    )}
-                    <Option>
-                        <Flex width='max-content'>
-                            <Avatar
-                                width='30px'
-                                height='30px'
-                                margin='0 1rem 0 0'
-                                imgUrl={user?.avatar}
-                                altText={user?.full_name}
-                            />
-                            <Text width='max-content'>{user?.full_name}</Text>
-                        </Flex>
-                    </Option>
+                    {renderSearchResults()}
                 </Flex>
                 <Flex margin='4rem 0 0 0'>
                     <Button variant='secondary' onClick={previousStep}>

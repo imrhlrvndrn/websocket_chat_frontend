@@ -12,3 +12,6 @@ export { EditIcon } from './EditIcon';
 export { AttachmentIcon } from './AttachmentIcon';
 export { MoreOptionsIcon } from './MoreOptionsIcon';
 export { MicIcon } from './MicIcon';
+export { OptionUnchecked } from './OptionUnchecked';
+export { OptionChecked } from './OptionChecked';
+export { CloseIcon } from './CloseIcon';
