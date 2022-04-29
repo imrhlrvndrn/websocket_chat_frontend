@@ -128,7 +128,11 @@ export const Sidebar = () => {
                                     : chat?.name
                             }
                             message='The most latest message in this chat'
-                            avatar={chat?.avatar}
+                            avatar={
+                                chat?.avatar
+                                    ? chat?.avatar
+                                    : 'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                            }
                         />
                     ))}
             </div>

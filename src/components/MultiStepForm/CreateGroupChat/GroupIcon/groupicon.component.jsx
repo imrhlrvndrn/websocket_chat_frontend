@@ -1,26 +1,25 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { activateAccount } from '../../../../http';
-import { useAuthentication, useTheme } from '../../../../context';
+import { useChat, useTheme } from '../../../../context';
 
 // styles
 import { Container, Text, Flex } from '../../../../styledcomponents';
 
 // components
 // import { ArrowRight, EditIcon } from '../../../../react_icons';
-import { Button, Card, CardContent, CardHeader, Loader } from '../../../';
-import { EditIcon } from '../../../../react_icons';
-import { Modal } from '../../../Modals/Modal/modal.component';
+import { Button, Loader, Modal } from '../../../';
+import { EditIcon, ArrowRight } from '../../../../react_icons';
 
-export const StepAvatar = ({ nextStep, previousStep }) => {
+export const GroupIcon = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
     const fileInputRef = useRef(null);
     const [isActivationInProgress, setIsActivationInProgress] = useState(false);
     const [
         {
-            new_user: { avatar, email, password, full_name },
+            new_chat: { name, avatar, users, group_admins, latest_message, is_group_chat },
         },
-        authDispatch,
-    ] = useAuthentication();
+        chatDispatch,
+    ] = useChat();
     const [image, setImage] = useState(avatar || '/images/avatars/young_boy.jpg');
 
     const captureImage = (event) => {
@@ -34,15 +33,17 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
         };
     };
 
-    const saveAndActivateAccount = async (event) => {
+    const saveAndCreateNewChat = async (event) => {
         event.preventDefault();
         if (!avatar) return;
 
         const formData = new FormData();
+        formData.append('name', name);
+        formData.append('users', users);
         formData.append('uploadedFile', avatar);
-        formData.append('full_name', full_name);
-        formData.append('email', email);
-        formData.append('password', password);
+        formData.append('group_admins', group_admins);
+        formData.append('is_group_chat', is_group_chat);
+        formData.append('latest_message', latest_message);
 
         try {
             setIsActivationInProgress(() => true);
@@ -52,7 +53,7 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
 
             if (success) {
                 // ! Check if the data is properly structured
-                authDispatch({ type: 'SET_USER', payload: data });
+                chatDispatch({ type: 'SET_NEW_CHAT', payload: data });
                 nextStep();
             }
         } catch (error) {
@@ -72,7 +73,7 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
         );
 
     return (
-        <Modal title={{ content: 'Choose a group avatar yo yo' }}>
+        <Modal title={{ content: 'Choose a group avatar' }}>
             <Flex width='100%'>
                 <Container
                     style={{ position: 'relative' }}
@@ -117,7 +118,7 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
                     </Flex>
                 </Container>
             </Flex>
-            <form onSubmit={saveAndActivateAccount}>
+            <form onSubmit={saveAndCreateNewChat}>
                 <Flex margin='4rem 0 0 0'>
                     <Button type='button' variant='secondary' onClick={previousStep}>
                         <Flex>
@@ -136,7 +137,7 @@ export const StepAvatar = ({ nextStep, previousStep }) => {
                                 Finish registration
                             </Text>
                             {/* Add this icon */}
-                            {/* <ArrowRight size={30} /> */}
+                            <ArrowRight size={30} />
                         </Flex>
                     </Button>
                 </Flex>

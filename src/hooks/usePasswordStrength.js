@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 export const usePasswordStrength = (password, { colors = [] }) => {
     let passwordStrength;
 
-    const countRegex = (data) => (data.length > 12 ? true : false);
+    const countRegex = (data) => (data.length >= 12 ? true : false);
     const lettersRegex = (data) => /[A-Za-z]+/.test(data);
     const numbersRegex = (data) => /[0-9]+/.test(data);
     const specialRegex = (data) => /[!\"$%&/()=?@~`\\.\';:+=^*_-]+/.test(data);

@@ -13,9 +13,16 @@ export const Password = ({ nextStep, previousStep }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const passwordMatch = confirmPassword === password ? true : false;
+    const passwordMatch =
+        confirmPassword !== '' && password !== '' && confirmPassword === password ? true : false;
     const disableNextStep =
         password && passwordMatch && new_user.password.strength === 4 ? false : true;
+
+    console.log('password properties => ', {
+        passwordMatch,
+        disableNextStep,
+        passwordStrength: new_user?.password,
+    });
 
     return (
         <form

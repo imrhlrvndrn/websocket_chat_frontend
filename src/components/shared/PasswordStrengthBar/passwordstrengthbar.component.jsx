@@ -20,13 +20,13 @@ export const PasswordStrengthBar = ({
     });
 
     useEffect(() => {
-        if (passwordStrength === 4) {
-            authDispatch({
-                type: 'SET_NEW_USER',
-                payload: { ...new_user, password: { value: password, strength: passwordStrength } },
-            });
-            callback();
-        }
+        // if (passwordStrength === 4) {
+        authDispatch({
+            type: 'SET_NEW_USER',
+            payload: { ...new_user, password: { value: password, strength: passwordStrength } },
+        });
+        // callback();
+        // }
     }, [password]);
 
     return (
