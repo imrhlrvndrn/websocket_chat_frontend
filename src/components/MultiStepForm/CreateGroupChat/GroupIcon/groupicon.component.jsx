@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState } from 'react';
-import { activateAccount } from '../../../../http';
+import { createChat } from '../../../../http';
 import { useChat, useTheme } from '../../../../context';
 
 // styles
@@ -14,22 +14,24 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
     const fileInputRef = useRef(null);
     const [isActivationInProgress, setIsActivationInProgress] = useState(false);
-    const [
-        {
-            new_chat: { name, avatar, users, group_admins, latest_message, is_group_chat },
-        },
-        chatDispatch,
-    ] = useChat();
+    const [{ new_chat }, chatDispatch] = useChat();
+    const { name, avatar, users, group_admins, latest_message, is_group_chat } = new_chat;
     const [image, setImage] = useState(avatar || '/images/avatars/young_boy.jpg');
 
     const captureImage = (event) => {
         const file = event.target.files[0];
+        if (!file) return;
+
+        console.log('File to be captured => ', file);
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             console.log('Selected file =>', file);
             setImage(reader.result);
-            authDispatch({ type: 'SET_AVATAR', payload: file });
+            chatDispatch({
+                type: 'SET_NEW_CHAT',
+                payload: { ...new_chat, avatar: reader?.result },
+            });
         };
     };
 
@@ -44,12 +46,13 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
         formData.append('group_admins', group_admins);
         formData.append('is_group_chat', is_group_chat);
         formData.append('latest_message', latest_message);
+        formData.append('action_type', 'CREATE_GROUP_CHAT');
 
         try {
             setIsActivationInProgress(() => true);
             const {
                 data: { success, data, toast },
-            } = await activateAccount(formData);
+            } = await createChat(formData);
 
             if (success) {
                 // ! Check if the data is properly structured
@@ -65,9 +68,9 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
 
     if (isActivationInProgress)
         return (
-            <Modal>
+            <Modal title={{ visible: false }}>
                 <Flex>
-                    <Loader message={`Activation in progress. Please wait...`} />
+                    <Loader message={`Creating your group. Please wait...`} />
                 </Flex>
             </Modal>
         );
@@ -79,7 +82,7 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
                     style={{ position: 'relative' }}
                     width='150px'
                     height='150px'
-                    border='10px'
+                    border='5px'
                     borderRadius='50%'
                     onClick={() => fileInputRef.current.click()}
                 >
@@ -114,7 +117,7 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
                         }}
                     >
                         {/* Add this Icon */}
-                        <EditIcon color={theme?.colors?.constants?.lightText} size={20} />
+                        <EditIcon color={theme?.colors?.text} size={20} />
                     </Flex>
                 </Container>
             </Flex>

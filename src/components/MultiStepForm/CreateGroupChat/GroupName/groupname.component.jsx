@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { useTheme } from '../../../../context';
+import { useChat, useTheme } from '../../../../context';
 
 // styles
 import { Flex } from '../../../../styledcomponents';
 
 // component
-import { Button, Input } from '../../..';
-import { Modal } from '../../../Modals/Modal/modal.component';
+import { Button, Input, Modal } from '../../..';
 
 export const GroupName = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
-    const [group, setGroup] = useState({ name: '', members: [] });
+    const [{ new_chat }, chatDispatch] = useChat();
+    // const [group, setGroup] = useState({ name: '', members: [] });
 
     return (
         <Modal title={{ content: 'Choose a group name' }}>
@@ -25,12 +25,15 @@ export const GroupName = ({ nextStep, previousStep }) => {
             >
                 <Input
                     style={{ backgroundColor: theme?.colors?.mediumBackground }}
-                    value={group?.name}
+                    value={new_chat?.name}
                     onChange={(event) =>
-                        setGroup((prevState) => ({
-                            ...prevState,
-                            name: event.target.value,
-                        }))
+                        chatDispatch({
+                            type: 'SET_NEW_CHAT',
+                            payload: {
+                                ...new_chat,
+                                name: event?.target?.value,
+                            },
+                        })
                     }
                     id='group_name'
                     placeholder='Enter your group name here'
@@ -39,7 +42,7 @@ export const GroupName = ({ nextStep, previousStep }) => {
                     <Button variant='secondary' onClick={previousStep}>
                         Don't create group
                     </Button>
-                    <Button disabled={!!!group?.name} type='submit'>
+                    <Button disabled={!!!new_chat?.name} type='submit'>
                         Add members
                     </Button>
                 </Flex>

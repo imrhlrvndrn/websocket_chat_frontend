@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { searchUsers } from '../../../../http';
 import { useDebounce } from '../../../../hooks';
-import { useAuthentication, useTheme } from '../../../../context';
+import { useAuthentication, useChat, useTheme } from '../../../../context';
 
 // styles
 import { Flex, Text } from '../../../../styledcomponents';
@@ -12,8 +12,8 @@ import { CloseIcon } from '../../../../react_icons';
 
 export const AddMembers = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
+    const [{ new_chat }, chatDispatch] = useChat();
     const [{ user }, authDispatch] = useAuthentication();
-    const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState({ query: '', results: [], loading: false });
     const debouncedSearch = useDebounce(search?.query, 500);
 
@@ -34,7 +34,7 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                     ...prevState,
                     results: data?.users
                         ?.map((user) =>
-                            selectedUsers.filter(
+                            new_chat?.users?.filter(
                                 (selected_user) => selected_user?._id === user?._id
                             )?.length > 0
                                 ? { ...user, is_selected: true }
@@ -65,7 +65,13 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                                             : selectedUser
                                     ),
                                 }));
-                                setSelectedUsers((prevState) => [...prevState, user]);
+                                chatDispatch({
+                                    type: 'SET_NEW_CHAT',
+                                    payload: {
+                                        ...new_chat,
+                                        users: [...new_chat?.users, user],
+                                    },
+                                });
                             }}
                         >
                             <Flex width='max-content'>
@@ -101,10 +107,10 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                     style={{ backgroundColor: theme?.colors?.mediumBackground }}
                 />
                 {/* Selected user pills */}
-                <Flex wrap justify='flex-start' style={{maxWidth: '500px'}}>
-                    {selectedUsers?.length > 0 &&
-                        selectedUsers?.map((user) => (
-                            <Flex width='max-content' margin='1rem 1rem 1rem 0'>
+                <Flex wrap justify='flex-start' style={{ maxWidth: '500px' }}>
+                    {new_chat?.users?.length > 0 &&
+                        new_chat?.users?.map((user) => (
+                            <Flex width='max-content' margin='1rem 1rem 1rem 0' key={user?._id}>
                                 <Avatar
                                     width='30px'
                                     height='30px'
@@ -126,11 +132,15 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                                                     : selectedUser
                                             ),
                                         }));
-                                        setSelectedUsers((prevState) =>
-                                            prevState.filter(
-                                                (selectedUser) => selectedUser._id !== user?._id
-                                            )
-                                        );
+                                        chatDispatch({
+                                            type: 'SET_NEW_CHAT',
+                                            payload: {
+                                                ...new_chat,
+                                                users: new_chat?.users?.filter(
+                                                    (selectedUser) => selectedUser._id !== user?._id
+                                                ),
+                                            },
+                                        });
                                     }}
                                 />
                             </Flex>

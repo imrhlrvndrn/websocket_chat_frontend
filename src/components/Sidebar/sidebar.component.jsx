@@ -1,5 +1,5 @@
 import { useDebounce } from '../../hooks';
-import { getDMChatName } from './sidebar.utils';
+import { getChatAvatar, getDMChatName } from './sidebar.utils';
 import React, { useEffect, useState } from 'react';
 import { createChat, getUserChats, searchUsers } from '../../http';
 import { useAuthentication, useModalManager } from '../../context';
@@ -81,11 +81,7 @@ export const Sidebar = () => {
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
-                <Avatar
-                    width='45px'
-                    height='45px'
-                    imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                />
+                <Avatar width='45px' height='45px' imgUrl={user?.avatar} />
                 {/* <div className='sidebar__header__icons'>
                     <StoriesIcon />
                     <MessageIcon />
@@ -129,9 +125,10 @@ export const Sidebar = () => {
                             }
                             message='The most latest message in this chat'
                             avatar={
-                                chat?.avatar
-                                    ? chat?.avatar
-                                    : 'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                                chat?.is_group_chat
+                                    ? chat?.avatar ||
+                                      'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                                    : getChatAvatar({ logged_user: user, chat_users: chat?.users })
                             }
                         />
                     ))}
