@@ -16,7 +16,7 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
     const [isActivationInProgress, setIsActivationInProgress] = useState(false);
     const [{ new_chat }, chatDispatch] = useChat();
     const { name, avatar, users, group_admins, latest_message, is_group_chat } = new_chat;
-    const [image, setImage] = useState(avatar || '/images/avatars/young_boy.jpg');
+    const [image, setImage] = useState(avatar?.display_image || '/images/avatars/young_boy.jpg');
 
     const captureImage = (event) => {
         const file = event.target.files[0];
@@ -28,25 +28,35 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
         reader.onloadend = () => {
             console.log('Selected file =>', file);
             setImage(reader.result);
+            /* Setting the avatar as reader?.result is causing issues when the avatar 
+            is sent to the backend */
             chatDispatch({
                 type: 'SET_NEW_CHAT',
-                payload: { ...new_chat, avatar: reader?.result },
+                payload: { ...new_chat, avatar: { display_image: reader?.result, raw: file } },
             });
         };
     };
 
-    const saveAndCreateNewChat = async (event) => {
+    const saveAndCreateNewChat = async (event) => { 
         event.preventDefault();
         if (!avatar) return;
 
         const formData = new FormData();
+        FormData.prototype.appendAnArrayOfData = function (name, arrayData) {
+            arrayData.map((value) => this.append(name, value));
+        };
         formData.append('name', name);
-        formData.append('users', users);
-        formData.append('uploadedFile', avatar);
+        formData.appendAnArrayOfData(
+            'users',
+            users.map((user) => user?._id)
+        );
+        formData.append('uploadedFile', avatar?.raw);
         formData.append('group_admins', group_admins);
         formData.append('is_group_chat', is_group_chat);
         formData.append('latest_message', latest_message);
         formData.append('action_type', 'CREATE_GROUP_CHAT');
+
+        console.log('Data before making request => ', formData);
 
         try {
             setIsActivationInProgress(() => true);

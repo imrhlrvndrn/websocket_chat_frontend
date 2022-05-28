@@ -10,7 +10,8 @@ export const OptionLabel = styled.label`
     transition: all 0.4s;
     border: 2px solid transparent;
 
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: ${(props) => props?.theme?.colors?.mediumBackground};
     }
 

@@ -56,6 +56,7 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                 (user) =>
                     !user?.is_selected && (
                         <Option
+                            tabIndex={1}
                             onClick={() => {
                                 setSearch((prevState) => ({
                                     ...prevState,
@@ -110,7 +111,12 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                 <Flex wrap justify='flex-start' style={{ maxWidth: '500px' }}>
                     {new_chat?.users?.length > 0 &&
                         new_chat?.users?.map((user) => (
-                            <Flex width='max-content' margin='1rem 1rem 1rem 0' key={user?._id}>
+                            <Flex
+                                tabIndex={0}
+                                width='max-content'
+                                margin='1rem 1rem 1rem 0'
+                                key={user?._id}
+                            >
                                 <Avatar
                                     width='30px'
                                     height='30px'
