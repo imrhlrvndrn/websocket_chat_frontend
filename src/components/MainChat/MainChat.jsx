@@ -17,6 +17,7 @@ import StyledMainChat from './StyledMainChat';
 // React components
 import Avatar from '../Avatar/Avatar';
 import Messages from './Messages/Messages';
+import { InfoIcon } from '../../react_icons';
 
 const MainChat = ({ match }) => {
     const [{ user, chatDetails, messages, chatInfo }, dispatch] = useDataLayerValue();
@@ -165,10 +166,7 @@ const MainChat = ({ match }) => {
                 </div>
                 <div className='mainChat__header__icons'>
                     {/* <AttachmentIcon /> */}
-                    <SearchIcon />
-                    <div onClick={() => setChatOptionsModal(!chatOptionsModal)}>
-                        <MoreOptionsIcon />
-                    </div>
+                    <InfoIcon />
                     {chatOptionsModal && (
                         <div className='chatOptionsModal'>
                             <span

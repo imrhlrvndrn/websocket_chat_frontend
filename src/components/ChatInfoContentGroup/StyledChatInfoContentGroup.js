@@ -7,6 +7,9 @@ export default styled.div`
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
     cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
 
     .copy {

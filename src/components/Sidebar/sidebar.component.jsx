@@ -2,7 +2,7 @@ import { useDebounce } from '../../hooks';
 import { getChatAvatar, getDMChatName } from './sidebar.utils';
 import React, { useEffect, useState } from 'react';
 import { createChat, getUserChats, searchUsers } from '../../http';
-import { useAuthentication, useModalManager } from '../../context';
+import { useAuthentication, useChat, useModalManager } from '../../context';
 
 // Styled conponents
 import StyledSidebar from './sidebar.styledcomponent';
@@ -14,11 +14,11 @@ import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../rea
 export const Sidebar = () => {
     const { showModal } = useModalManager();
     const [{ user }, authDispatch] = useAuthentication();
+    const [{ user_chats }, chatDispatch] = useChat();
     const [search, setSearch] = useState({
         query: '',
         results: [],
     });
-    const [userChats, setUserChats] = useState([]);
     const debouncedSearch = useDebounce(search.query, 500);
 
     const searchForUsers = async () => {
@@ -45,7 +45,7 @@ export const Sidebar = () => {
             } = await getUserChats(user?._id);
 
             if (success) {
-                setUserChats(data?.chats);
+                chatDispatch({ type: 'SET_USER_CHATS', payload: data?.chats });
             }
         } catch (error) {
             console.error(error);
@@ -60,7 +60,7 @@ export const Sidebar = () => {
 
             if (success) {
                 setSearch((prevState) => ({ query: '', results: [] }));
-                setUserChats((prevState) => [...prevState, data.chat]);
+                chatDispatch({ type: 'SET_USER_CHATS', payload: [...user_chats, data?.chat] });
             }
         } catch (error) {
             console.error(error);
@@ -75,6 +75,9 @@ export const Sidebar = () => {
     useEffect(() => {
         (async () => await fetchUserChats())();
     }, []);
+
+    useEffect(() => {}, [user_chats]);
+    console.log('user chats => ', user_chats);
 
     console.log('user => ', user);
 
@@ -116,12 +119,12 @@ export const Sidebar = () => {
                     ))}
 
                 {search?.query?.length === 0 &&
-                    userChats?.map((chat) => (
+                    user_chats?.map((chat) => (
                         <ChatCard
                             title={
-                                !chat?.is_group_chat
-                                    ? getDMChatName({ logged_user: user, chat_users: chat?.users })
-                                    : chat?.name
+                                chat?.is_group_chat
+                                    ? chat?.name
+                                    : getDMChatName({ logged_user: user, chat_users: chat?.users })
                             }
                             message='The most latest message in this chat'
                             avatar={

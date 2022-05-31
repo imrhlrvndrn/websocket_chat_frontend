@@ -29,6 +29,7 @@ export const searchUsers = (searchTerm) => axios.get(`/api/user/search?query=${s
 export const getUser = (userId) => axios.get(`/api/user/${userId}`);
 export const getUserChats = (userId) => axios.get(`/api/user/${userId}/chats`);
 export const createChat = (chat_data) => axios.post('/api/chat', chat_data);
+export const fetchChat = (chat_id) => axios.get(`/api/chat/${chat_id}`);
 export const execChatOperation = ({ chatId = '', action = '', data = {} }) =>
     axios.post(`/api/chat/${chatId}/${action}`, data);
 

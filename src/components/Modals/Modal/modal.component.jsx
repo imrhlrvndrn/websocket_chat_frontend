@@ -12,11 +12,14 @@ export const Modal = ({
     // variant,
     children,
     title,
+    ...props
 }) => {
     const [{ theme }] = useTheme();
     const { hideModal } = useModalManager();
 
     const { visible = true, content = 'Modal Header' } = title;
+
+    console.log('Modal props => ', { title, props });
 
     return (
         <ModalContainer>

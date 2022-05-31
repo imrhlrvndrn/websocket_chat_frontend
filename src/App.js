@@ -18,6 +18,7 @@ const App = () => {
     return (
         <Routes>
             <Route exact path='/' element={<MainApp messages={messages} />} />
+            <Route exact path='/:chatId' element={<MainApp messages={messages} />} />
             <Route exact path='authenticate' element={<Auth />} />
         </Routes>
     );

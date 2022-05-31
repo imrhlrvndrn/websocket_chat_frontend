@@ -3,7 +3,7 @@ import { StepAvatar, StepEmail, StepName, StepPassword } from '../..';
 import { useSteps } from '../../../hooks';
 
 export const Register = ({ tabs, switchTab }) => {
-    const [currentStep, ActiveStep, navigation] = useSteps(
+    const [currentStep, { ActiveStep, Props }, navigation] = useSteps(
         [StepEmail, StepPassword, StepName, StepAvatar],
         { redirectTo: '/', from: '/authenticate?tab_state=login' }
     );

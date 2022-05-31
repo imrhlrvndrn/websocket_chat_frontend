@@ -14,7 +14,7 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
     const fileInputRef = useRef(null);
     const [isActivationInProgress, setIsActivationInProgress] = useState(false);
-    const [{ new_chat }, chatDispatch] = useChat();
+    const [{ new_chat, user_chats }, chatDispatch] = useChat();
     const { name, avatar, users, group_admins, latest_message, is_group_chat } = new_chat;
     const [image, setImage] = useState(avatar?.display_image || '/images/avatars/young_boy.jpg');
 
@@ -37,7 +37,7 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
         };
     };
 
-    const saveAndCreateNewChat = async (event) => { 
+    const saveAndCreateNewChat = async (event) => {
         event.preventDefault();
         if (!avatar) return;
 
@@ -60,15 +60,19 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
 
         try {
             setIsActivationInProgress(() => true);
-            const {
-                data: { success, data, toast },
-            } = await createChat(formData);
+            // const {
+            //     data: { success, data, toast },
+            // } = await createChat(formData);
 
-            if (success) {
-                // ! Check if the data is properly structured
-                chatDispatch({ type: 'SET_NEW_CHAT', payload: data });
-                nextStep();
-            }
+            // console.log('new group => ', { success, data, toast });
+
+            // if (success) {
+            //     // ! Check if the data is properly structured
+            //     chatDispatch({ type: 'SET_USER_CHATS', payload: [...user_chats, data?.chat] });
+            nextStep(event, '/', {
+                title: { content: 'Group creation was successful!!', visible: true },
+            });
+            // }
         } catch (error) {
             console.error(error);
         } finally {

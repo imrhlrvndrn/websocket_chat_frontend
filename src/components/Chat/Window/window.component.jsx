@@ -8,6 +8,7 @@ import {
     SearchIcon,
     SmileIcon,
     MicIcon,
+    InfoIcon,
 } from '../../../react_icons';
 
 // Styled components
@@ -22,6 +23,7 @@ import {
 // React components
 import { Avatar, Button, Input, Messages } from '../..';
 import { Container, Text } from '../../../styledcomponents';
+import ChatInfoContentGroup from '../../ChatInfoContentGroup/ChatInfoContentGroup';
 
 export const ChatWindow = ({ messages }) => {
     const [input, setInput] = useState('');
@@ -59,8 +61,9 @@ export const ChatWindow = ({ messages }) => {
                 </Container>
                 <>
                     {/* <AttachmentIcon /> */}
-                    <SearchIcon />
-                    <MoreOptionsIcon />
+                    {/* <SearchIcon /> */}
+                    <InfoIcon />
+                    {/* <MoreOptionsIcon /> */}
                 </>
             </ChatWindowHeader>
 
@@ -90,6 +93,7 @@ export const ChatWindow = ({ messages }) => {
                 </ChatMessageInputForm>
                 <MicIcon />
             </ChatWindowMessageContainer>
+            <ChatInfoContentGroup />
         </StyledChatWindow>
     );
 };

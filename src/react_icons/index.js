@@ -15,3 +15,4 @@ export { MicIcon } from './MicIcon';
 export { OptionUnchecked } from './OptionUnchecked';
 export { OptionChecked } from './OptionChecked';
 export { CloseIcon } from './CloseIcon';
+export { InfoIcon } from './InfoIcon';
