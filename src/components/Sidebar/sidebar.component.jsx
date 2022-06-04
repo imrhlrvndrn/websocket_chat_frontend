@@ -5,10 +5,11 @@ import { createChat, getUserChats, searchUsers } from '../../http';
 import { useAuthentication, useChat, useModalManager } from '../../context';
 
 // Styled conponents
+import { Flex, Text } from '../../styledcomponents';
 import StyledSidebar from './sidebar.styledcomponent';
 
 // components
-import { Avatar, ChatCard, Button } from '..';
+import { Avatar, ChatCard, Button, TextAvatar } from '..';
 import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../react_icons';
 
 export const Sidebar = () => {
@@ -84,7 +85,7 @@ export const Sidebar = () => {
     return (
         <StyledSidebar>
             <div className='sidebar__header'>
-                <Avatar width='45px' height='45px' imgUrl={user?.avatar} />
+                <Avatar width='45px' height='45px' url={user?.avatar} />
                 {/* <div className='sidebar__header__icons'>
                     <StoriesIcon />
                     <MessageIcon />
@@ -120,20 +121,36 @@ export const Sidebar = () => {
 
                 {search?.query?.length === 0 &&
                     user_chats?.map((chat) => (
-                        <ChatCard
-                            title={
-                                chat?.is_group_chat
-                                    ? chat?.name
-                                    : getDMChatName({ logged_user: user, chat_users: chat?.users })
-                            }
-                            message='The most latest message in this chat'
-                            avatar={
-                                chat?.is_group_chat
+                        <TextAvatar
+                            hover={{ cursor: 'pointer' }}
+                            padding='1rem'
+                            img={{
+                                margin: '0 1rem 0 0',
+                                url: chat?.is_group_chat
                                     ? chat?.avatar ||
                                       'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                                    : getChatAvatar({ logged_user: user, chat_users: chat?.users })
-                            }
-                        />
+                                    : getChatAvatar({ logged_user: user, chat_users: chat?.users }),
+                                alt: `${chat?.title} avatar`,
+                            }}
+                        >
+                            <Flex direction='column' style={{ zIndex: 0, flex: 1 }}>
+                                <Text as='h2' weight='medium'>
+                                    {chat?.is_group_chat
+                                        ? chat?.name
+                                        : getDMChatName({
+                                              logged_user: user,
+                                              chat_users: chat?.users,
+                                          })}
+                                </Text>
+                                <Text
+                                    opacity='0.6'
+                                    title='The most latest message'
+                                    size='caption/large'
+                                >
+                                    The most latest message
+                                </Text>
+                            </Flex>
+                        </TextAvatar>
                     ))}
             </div>
         </StyledSidebar>

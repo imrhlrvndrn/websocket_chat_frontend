@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Flex = styled.div`
     position: relative;
@@ -13,4 +13,15 @@ export const Flex = styled.div`
     flex-grow: ${(props) => props.grow || '0'};
     flex-shrink: ${(props) => props.shrink || '0'};
     flex-wrap: ${(props) => (props.wrap ? 'wrap' : 'no-wrap')};
+
+    &:hover {
+        ${(props) =>
+            props?.hover &&
+            css`
+                ${Object.keys(props?.hover).reduce((acc, key) => {
+                    console.log('HOver css => ', `${acc} ${key}: ${props?.hover[key]};`);
+                    return `${acc} ${key}: ${props?.hover[key]};`;
+                }, '')}
+            `}
+    }
 `;

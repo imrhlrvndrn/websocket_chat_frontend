@@ -3,14 +3,14 @@ import React from 'react';
 // Styled components
 import StyledAvatar from './avatar.styledcomponent';
 
-export const Avatar = ({ imgUrl, altText, width, height, margin }) => {
+export const Avatar = ({ url, altText, size, margin, borderRadius }) => {
     return (
         <StyledAvatar
             margin={margin}
-            width={width ? width : '50px'}
-            height={height ? height : '50px'}
+            size={size ? size : '50px'}
+            borderRadius={borderRadius || '50%'}
         >
-            <img src={imgUrl} alt={altText ? altText : ''} />
+            <img src={url} alt={altText ? altText : ''} />
         </StyledAvatar>
     );
 };

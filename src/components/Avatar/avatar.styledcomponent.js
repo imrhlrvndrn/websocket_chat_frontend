@@ -6,13 +6,13 @@ export default styled.div`
     justify-content: center;
     width: max-content;
     height: max-content;
-    margin: ${(props) => props.margin || '0'};
+    margin: ${(props) => props?.margin || '0'};
 
     img {
-        width: ${(props) => props.width};
-        height: ${(props) => props.height};
-        border-radius: 50%;
+        width: ${(props) => props?.size || '50px'};
+        height: ${(props) => props?.size || '50px'};
+        border-radius: ${(props) => props?.borderRadius || '50%'};
         object-fit: cover;
         object-position: center;
-    }
+    }size
 `;

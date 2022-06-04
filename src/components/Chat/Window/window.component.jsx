@@ -23,7 +23,7 @@ import {
 // React components
 import { Avatar, Button, Input, Messages } from '../..';
 import { Container, Text } from '../../../styledcomponents';
-import ChatInfoContentGroup from '../../ChatInfoContentGroup/ChatInfoContentGroup';
+import ChatInfo from '../../ChatInfo/ChatInfo';
 
 export const ChatWindow = ({ messages }) => {
     const [input, setInput] = useState('');
@@ -93,7 +93,7 @@ export const ChatWindow = ({ messages }) => {
                 </ChatMessageInputForm>
                 <MicIcon />
             </ChatWindowMessageContainer>
-            <ChatInfoContentGroup />
+            <ChatInfo />
         </StyledChatWindow>
     );
 };

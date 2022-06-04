@@ -10,6 +10,7 @@ export default styled.div`
         justify-content: space-between;
         align-items: center;
         padding: 1rem;
+        max-height: 80px;
         height: max-content;
         background-color: ${(props) => props.theme.colors.darkBackground};
 
