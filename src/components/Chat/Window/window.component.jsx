@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { axios } from '../../../config';
+import { useModalManager } from '../../../context';
 
 // React icons
 import {
@@ -21,12 +22,12 @@ import {
 } from './window.styledcomponent';
 
 // React components
-import { Avatar, Button, Input, Messages } from '../..';
+import { Avatar, Button, Input, Messages, ChatInformation } from '../..';
 import { Container, Text } from '../../../styledcomponents';
-import ChatInfo from '../../ChatInfo/ChatInfo';
 
 export const ChatWindow = ({ messages }) => {
     const [input, setInput] = useState('');
+    const { showModal } = useModalManager();
 
     const sendMessage = (event) => {
         event.preventDefault();
@@ -62,7 +63,7 @@ export const ChatWindow = ({ messages }) => {
                 <>
                     {/* <AttachmentIcon /> */}
                     {/* <SearchIcon /> */}
-                    <InfoIcon />
+                    <InfoIcon onClick={() => showModal('CHAT_INFORMATION')} />
                     {/* <MoreOptionsIcon /> */}
                 </>
             </ChatWindowHeader>
@@ -93,7 +94,7 @@ export const ChatWindow = ({ messages }) => {
                 </ChatMessageInputForm>
                 <MicIcon />
             </ChatWindowMessageContainer>
-            <ChatInfo />
+            <ChatInformation />
         </StyledChatWindow>
     );
 };

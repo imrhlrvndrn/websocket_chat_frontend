@@ -1,12 +1,14 @@
 import { createContext, useContext, useState } from 'react';
 
 // components
-import { CreateGroupChat } from '../../components';
+import { CreateGroupChat, AddParticipant, ChatInformation } from '../../components';
 
 const MODAL_TYPES = {
+    ADD_PARTICIPANT: AddParticipant,
     CREATE_NEW_GROUP_MODAL: CreateGroupChat,
     DELETE_MODAL: '',
     UPDATE_MODAL: '',
+    CHAT_INFORMATION: ChatInformation,
 };
 
 const initialState = {

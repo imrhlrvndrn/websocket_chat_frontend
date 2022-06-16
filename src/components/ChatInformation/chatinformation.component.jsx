@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { fetchChat } from '../../http';
-import { CloseIcon } from '../../react_icons';
+import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { AddUserIcon, CloseIcon, LinkIcon } from '../../react_icons';
+import { getChatAvatar, getDMChatName } from '../Sidebar/sidebar.utils';
+import { useAuthentication, useChat, useModalManager, useTheme } from '../../context';
 
 // Styled components
 import { Flex, Text } from '../../styledcomponents';
@@ -10,33 +12,21 @@ import {
     ChatInfoHeader,
     ChatInfoBody,
     ChatParticipantsContainer,
-} from './StyledChatInfo';
+} from './chatinformation.styledcomponent';
 
 // components
-import { TextAvatar } from '../';
+import { TextAvatar } from '..';
 
 // Images
 
-const ChatInfo = (props) => {
-    const [chatDetails, setChatDetails] = useState({});
+export const ChatInformation = (props) => {
+    const inputRef = useRef(null);
+    const formRef = useRef(null);
+    const [{ theme }] = useTheme();
+    const [{ open_chat }] = useChat();
+    const { showModal } = useModalManager();
+    const [{ user }] = useAuthentication();
     const [isBlocked, setIsBlocked] = useState(false);
-    const params = useParams();
-
-    const fetchChatInfo = async () => {
-        try {
-            const {
-                data: { data, success },
-            } = await fetchChat(params?.chatId);
-            console.log('Chat information=> ', { data });
-            if (success) setChatDetails((prevState) => data?.chat);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        (async () => await fetchChatInfo())();
-    }, []);
 
     // const chatInfoDetails =
     //     chatDetails?.members?.length <= 2
@@ -103,36 +93,84 @@ const ChatInfo = (props) => {
             </ChatInfoHeader>
             <ChatInfoBody>
                 <img
-                    src='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                    src={
+                        open_chat?.is_group_chat
+                            ? open_chat?.avatar ||
+                              'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                            : getChatAvatar({ logged_user: user, chat_users: open_chat?.users })
+                    }
                     alt='user avatar'
                     className='chatAvatar'
                 />
                 <Text align='center' size='heading4/large'>
-                    {chatDetails?.name}
+                    {open_chat?.is_group_chat
+                        ? open_chat?.name
+                        : getDMChatName({
+                              logged_user: user,
+                              chat_users: open_chat?.users,
+                          })}
                 </Text>
                 <Text align='center' size='body/small' opacity='0.6'>
-                    {chatDetails?.users?.length} participants
+                    {open_chat?.users?.length} participants
                 </Text>
                 <ChatParticipantsContainer>
-                    <Text margin='0 0 1rem 0'>{chatDetails?.users?.length} participants</Text>
-                    {new Array(1, 2, 3, 4).map(() => (
+                    <Text margin='0 0 1rem 0'>{open_chat?.users?.length} participants</Text>
+                    {open_chat?.is_group_chat && (
+                        <>
+                            <Flex
+                                hover={{ cursor: 'pointer' }}
+                                margin='0 0 1rem 0'
+                                onClick={() => showModal('ADD_PARTICIPANT')}
+                            >
+                                <Flex
+                                    width='50px'
+                                    height='50px'
+                                    borderRadius='50%'
+                                    margin='0 1rem 0 0'
+                                    style={{
+                                        backgroundColor: theme?.colors?.constants?.primary?.medium,
+                                    }}
+                                >
+                                    <AddUserIcon color={theme?.colors?.icon} />
+                                </Flex>
+                                <Text>Add members</Text>
+                            </Flex>
+                            <Flex hover={{ cursor: 'pointer' }} margin='0 0 1rem 0'>
+                                <Flex
+                                    width='50px'
+                                    height='50px'
+                                    borderRadius='50%'
+                                    margin='0 1rem 0 0'
+                                    style={{
+                                        backgroundColor: theme?.colors?.constants?.primary?.medium,
+                                    }}
+                                >
+                                    <LinkIcon color={theme?.colors?.icon} />
+                                </Flex>
+                                <Text>Invite to group via link</Text>
+                            </Flex>
+                        </>
+                    )}
+                    {open_chat?.users?.map((user) => (
                         <TextAvatar
                             img={{
-                                url: 'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
+                                url:
+                                    user?.avatar ||
+                                    'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
                                 alt: 'user avatar',
                                 margin: '0 1rem 0 0',
                             }}
                             margin='0 0 1rem 0'
                         >
-                            <Text>User's name</Text>
+                            <Text>{user?.full_name}</Text>
                         </TextAvatar>
                     ))}
                 </ChatParticipantsContainer>
-                {/* <img src={chatDetails?.photoURL || WhatsAppDefault} alt={chatDetails?.name} /> */}
+                {/* <img src={open_chat?.photoURL || WhatsAppDefault} alt={open_chat?.name} /> */}
                 {/* {chatInfoDetails.map(({ title, content }) => (
                     <ChatInfoContentGroup title={title} content={content} />
                 ))} */}
-                {/* {chatDetails?.members?.length <= 2 ? (
+                {/* {open_chat?.members?.length <= 2 ? (
                     user?.userId !== chatInfoMember?.memberId && (
                         <ChatInfoContentGroup
                             content={isBlocked ? 'Unblock' : 'Block'}
@@ -151,9 +189,18 @@ const ChatInfo = (props) => {
                         onClick={exitGroup}
                     />
                 )} */}
+                <form
+                    ref={formRef}
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        console.log('The form is submitted!!!!');
+                    }}
+                >
+                    <input type='submit' ref={inputRef} />
+                </form>
+
+                <button onClick={() => inputRef.current.click()}>Submit the form</button>
             </ChatInfoBody>
         </StyledChatInfo>
     );
 };
-
-export default ChatInfo;

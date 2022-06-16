@@ -22,11 +22,15 @@ export const initialChatState = {
 export const chatReducers = (state, action) => {
     switch (action.type) {
         case 'SET_NEW_CHAT': {
-            return { ...state, new_chat: action.payload };
+            return { ...state, new_chat: action?.payload };
         }
 
         case 'SET_USER_CHATS': {
-            return { ...state, user_chats: action.payload };
+            return { ...state, user_chats: action?.payload };
+        }
+
+        case 'SET_OPEN_CHAT': {
+            return { ...state, open_chat: action?.payload };
         }
 
         default: {

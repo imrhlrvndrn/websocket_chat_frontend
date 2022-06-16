@@ -4,6 +4,7 @@ export { Sidebar } from './Sidebar/sidebar.component';
 export { ChatCard } from './Chat/Card/card.component';
 export { Messages } from './Messages/messages.component';
 export { ChatWindow } from './Chat/Window/window.component';
+export { ChatInformation } from './ChatInformation/chatinformation.component';
 
 // Multi-Step Forms
 export { Email } from './MultiStepForm/Email/email.component';
@@ -23,13 +24,14 @@ export { Card, CardContent, CardHeader } from './Forms/Layout/formlayout.compone
 
 // Modals
 export { Modal } from './Modals/Modal/modal.component';
-export { ChatInformation } from './Modals/ChatInformation/chatinformation.component';
 export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.component';
+export { AddParticipant } from './Modals/AddParticipant/addparticipant.component';
 
 // shared
 export { Link } from './shared/Link/link.component';
 export { Option } from './shared/Option/option.component';
 export { Button } from './shared/Button/button.component';
+export { UserPill } from './shared/UserPill/userpill.component';
 export { TextAvatar } from './shared/TextAvatar/textavatar.component';
 export { Input, PasswordField } from './shared/Input/input.component';
 export { LoaderComponent as Loader } from './shared/Loader/loader.component';

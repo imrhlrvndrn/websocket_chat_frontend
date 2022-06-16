@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { searchUsers } from '../../../../http';
-import { useDebounce } from '../../../../hooks';
-import { useAuthentication, useChat, useTheme } from '../../../../context';
+import { useEffect, useState } from 'react';
+import { execChatOperation, searchUsers } from '../../../http';
+import { useDebounce } from '../../../hooks';
+import { useAuthentication, useChat, useModalManager, useTheme } from '../../../context';
 
 // styles
-import { Flex, Text } from '../../../../styledcomponents';
+import { Flex, Text } from '../../../styledcomponents';
 
 // components
-import { UserPill, Avatar, Option, Input, Button, Modal } from '../../..';
-import { CloseIcon } from '../../../../react_icons';
+import { Modal, Input, UserPill, Avatar, Option, Button } from '../../';
 
-export const AddMembers = ({ nextStep, previousStep }) => {
+export const AddParticipant = () => {
     const [{ theme }] = useTheme();
-    const [{ new_chat }, chatDispatch] = useChat();
+    const { hideModal } = useModalManager();
+    const [{ open_chat, new_chat }, chatDispatch] = useChat();
     const [{ user }, authDispatch] = useAuthentication();
+    const [newMembers, setNewMembers] = useState([]);
     const [search, setSearch] = useState({ query: '', results: [], loading: false });
     const debouncedSearch = useDebounce(search?.query, 500);
 
@@ -34,9 +35,8 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                     ...prevState,
                     results: data?.users
                         ?.map((user) =>
-                            new_chat?.users?.filter(
-                                (selected_user) => selected_user?._id === user?._id
-                            )?.length > 0
+                            newMembers?.filter((selected_user) => selected_user?._id === user?._id)
+                                ?.length > 0
                                 ? { ...user, is_selected: true }
                                 : { ...user, is_selected: false }
                         )
@@ -66,13 +66,7 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                                             : selectedUser
                                     ),
                                 }));
-                                chatDispatch({
-                                    type: 'SET_NEW_CHAT',
-                                    payload: {
-                                        ...new_chat,
-                                        users: [...new_chat?.users, user],
-                                    },
-                                });
+                                setNewMembers((prevState) => [...prevState, user]);
                             }}
                         >
                             <Flex width='max-content'>
@@ -92,13 +86,33 @@ export const AddMembers = ({ nextStep, previousStep }) => {
             return <Text>No users found.</Text>;
     };
 
+    const addMembersToGroup = async (event) => {
+        event.preventDefault();
+
+        try {
+            const {
+                data: { success, data },
+            } = await execChatOperation({
+                chatId: open_chat?._id,
+                action: 'add-user',
+                data: { new_members: newMembers?.map((user) => user?._id) },
+            });
+            if (success) {
+                //! Implement a false lie mechanism since the response doesn't contain necessary data
+                // ! to display on the UI
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
-        searchForUsers();
+        (async () => await searchForUsers())();
     }, [debouncedSearch]);
 
     return (
         <Modal title={{ content: 'Add members to your group' }}>
-            <form onSubmit={() => nextStep()}>
+            <form style={{ width: '500px' }} onSubmit={addMembersToGroup}>
                 <Input
                     placeholder='Search users by name or email'
                     onChange={(event) =>
@@ -108,8 +122,8 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                 />
                 {/* Selected user pills */}
                 <Flex wrap justify='flex-start' style={{ maxWidth: '500px' }}>
-                    {new_chat?.users?.length > 0 &&
-                        new_chat?.users?.map((user) => (
+                    {newMembers?.length > 0 &&
+                        newMembers?.map((user) => (
                             <UserPill
                                 key={user?._id}
                                 user={user}
@@ -122,28 +136,27 @@ export const AddMembers = ({ nextStep, previousStep }) => {
                                                 : selectedUser
                                         ),
                                     }));
-                                    chatDispatch({
-                                        type: 'SET_NEW_CHAT',
-                                        payload: {
-                                            ...new_chat,
-                                            users: new_chat?.users?.filter(
-                                                (selectedUser) => selectedUser._id !== user?._id
-                                            ),
-                                        },
-                                    });
+                                    setNewMembers((prevState) =>
+                                        prevState?.filter(
+                                            (selectedUser) => selectedUser._id !== user?._id
+                                        )
+                                    );
                                 }}
                             />
                         ))}
                 </Flex>
+
                 {/* Searched users */}
                 <Flex direction='column' margin='2rem 0'>
                     {renderSearchResults()}
                 </Flex>
                 <Flex margin='4rem 0 0 0'>
-                    <Button variant='secondary' onClick={previousStep}>
-                        Edit group name
+                    <Button variant='secondary' onClick={() => hideModal()}>
+                        Cancel
                     </Button>
-                    <Button type='submit'>Set a display image</Button>
+                    <Button disabled={!!!open_chat?._id} type='submit'>
+                        Add Members
+                    </Button>
                 </Flex>
             </form>
         </Modal>

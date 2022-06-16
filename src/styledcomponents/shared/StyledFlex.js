@@ -7,6 +7,7 @@ export const Flex = styled.div`
     height: ${(props) => props.height || 'auto'};
     margin: ${(props) => props.margin || '0'};
     padding: ${(props) => props.padding || '0'};
+    border-radius: ${(props) => props?.borderRadius || '0'};
     flex-direction: ${(props) => props.direction || 'row'};
     align-items: ${(props) => props.align || 'center'};
     justify-content: ${(props) => props.justify || 'center'};

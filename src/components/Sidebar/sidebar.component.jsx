@@ -1,6 +1,7 @@
 import { useDebounce } from '../../hooks';
-import { getChatAvatar, getDMChatName } from './sidebar.utils';
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { getChatAvatar, getDMChatName } from './sidebar.utils';
 import { createChat, getUserChats, searchUsers } from '../../http';
 import { useAuthentication, useChat, useModalManager } from '../../context';
 
@@ -13,6 +14,7 @@ import { Avatar, ChatCard, Button, TextAvatar } from '..';
 import { SearchIcon, StoriesIcon, MessageIcon, MoreOptionsIcon } from '../../react_icons';
 
 export const Sidebar = () => {
+    const navigate = useNavigate();
     const { showModal } = useModalManager();
     const [{ user }, authDispatch] = useAuthentication();
     const [{ user_chats }, chatDispatch] = useChat();
@@ -122,6 +124,7 @@ export const Sidebar = () => {
                 {search?.query?.length === 0 &&
                     user_chats?.map((chat) => (
                         <TextAvatar
+                            onClick={() => navigate(`/${chat._id}`)}
                             hover={{ cursor: 'pointer' }}
                             padding='1rem'
                             img={{

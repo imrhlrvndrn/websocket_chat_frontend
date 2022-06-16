@@ -5,6 +5,7 @@ export const StyledCard = styled.div`
     width: 700px;
     max-width: 90%;
     min-height: 400px;
+    height: max-content;
     padding: 2rem;
     display: flex;
     flex-direction: column;
@@ -17,6 +18,7 @@ export const StyledCard = styled.div`
 
 export const StyledCardContent = styled.div`
     margin-top: 1rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
