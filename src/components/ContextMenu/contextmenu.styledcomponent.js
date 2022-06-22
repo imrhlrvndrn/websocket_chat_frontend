@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export default styled.div`
-    position: absolute;
+    position: fixed;
     background-color: black;
 
     .contextMenu_item {

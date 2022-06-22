@@ -15,7 +15,7 @@ import {
 } from './chatinformation.styledcomponent';
 
 // components
-import { TextAvatar } from '..';
+import { ContextMenu, TextAvatar } from '..';
 
 // Images
 
@@ -152,18 +152,20 @@ export const ChatInformation = (props) => {
                         </>
                     )}
                     {open_chat?.users?.map((user) => (
-                        <TextAvatar
-                            img={{
-                                url:
-                                    user?.avatar ||
-                                    'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
-                                alt: 'user avatar',
-                                margin: '0 1rem 0 0',
-                            }}
-                            margin='0 0 1rem 0'
-                        >
-                            <Text>{user?.full_name}</Text>
-                        </TextAvatar>
+                        <ContextMenu menu={['hello', 'bye']}>
+                            <TextAvatar
+                                img={{
+                                    url:
+                                        user?.avatar ||
+                                        'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
+                                    alt: 'user avatar',
+                                    margin: '0 1rem 0 0',
+                                }}
+                                margin='0 0 1rem 0'
+                            >
+                                <Text>{user?.full_name}</Text>
+                            </TextAvatar>
+                        </ContextMenu>
                     ))}
                 </ChatParticipantsContainer>
                 {/* <img src={open_chat?.photoURL || WhatsAppDefault} alt={open_chat?.name} /> */}

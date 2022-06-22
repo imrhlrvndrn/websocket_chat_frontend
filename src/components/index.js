@@ -4,6 +4,7 @@ export { Sidebar } from './Sidebar/sidebar.component';
 export { ChatCard } from './Chat/Card/card.component';
 export { Messages } from './Messages/messages.component';
 export { ChatWindow } from './Chat/Window/window.component';
+export { ContextMenu } from './ContextMenu/contextmenu.component';
 export { ChatInformation } from './ChatInformation/chatinformation.component';
 
 // Multi-Step Forms
