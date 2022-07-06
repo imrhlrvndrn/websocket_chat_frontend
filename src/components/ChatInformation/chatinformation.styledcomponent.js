@@ -7,6 +7,7 @@ export const StyledChatInfo = styled.div`
     top: 0;
     right: 0;
     overflow-y: auto;
+    overflow-x: visible;
     box-shadow: -5px 0 10px 0 rgba(0, 0, 0, 0.4);
     background-color: ${(props) => props?.theme?.colors?.mediumBackground};
 
@@ -49,7 +50,7 @@ export const ChatInfoHeader = styled.div`
 `;
 
 export const ChatInfoBody = styled.div`
-    padding: 1rem;
+    padding: 0rem;
     min-height: calc(100% - 80px);
     background-color: ${(props) => props?.theme?.colors?.mediumBackground};
 

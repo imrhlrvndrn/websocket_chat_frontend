@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 // styles
-import { Text } from '../../../../styledcomponents';
+import { Text } from '../../../../styled_components';
 
 // components
 import { Card, CardContent, CardHeader, Email } from '../../..';

@@ -1,4 +1,4 @@
-import { darkTheme, lightTheme } from '../../styledcomponents';
+import { darkTheme, lightTheme } from '../../styled_components';
 
 export const initialThemeState = {
     theme: {

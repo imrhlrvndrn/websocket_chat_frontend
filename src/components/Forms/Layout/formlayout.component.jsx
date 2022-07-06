@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 // styles
-import { Text } from '../../../styledcomponents';
+import { Text } from '../../../styled_components';
 import { StyledCard, StyledCardContent } from './formlayout.styledcomponent';
 
 export const Card = ({ children, style }) => {

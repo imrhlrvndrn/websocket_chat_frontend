@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { useTheme, useAuthentication } from '../../../../context';
 
 // styles
-import { Text, Flex } from '../../../../styledcomponents';
+import { Text, Flex } from '../../../../styled_components';
 
 // components
 import { ArrowRight } from '../../../../react_icons';

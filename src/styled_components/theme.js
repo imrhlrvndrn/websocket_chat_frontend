@@ -9,7 +9,7 @@ export const lightTheme = {
     mediumBackground: 'hsl(0, 0%, 92.9%)', // medium grey
     darkBackground: 'hsl(0, 0%, 86.9%)', // dark grey
     text: 'hsl(0, 0%, 1.6%)', // dark blue
-    icon: 'hsl(0, 0%, 56.9%)',
+    icon: 'hsl(0, 0%, 1.6%)',
 };
 
 export const darkTheme = {

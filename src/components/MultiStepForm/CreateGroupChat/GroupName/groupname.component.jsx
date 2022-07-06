@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useChat, useTheme } from '../../../../context';
 
 // styles
-import { Flex } from '../../../../styledcomponents';
+import { Flex } from '../../../../styled_components';
 
 // component
 import { Button, Input, Modal } from '../../..';

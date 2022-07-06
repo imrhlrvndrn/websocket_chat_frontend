@@ -1,77 +1,47 @@
-import { useCallback, useEffect, useState, forwardRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useExternalEventDetector } from './';
 
-export const useContextMenu_original = () => {
+export const useContextMenu = (identifier, setVisibility) => {
     const [xPos, setXPos] = useState('0px');
     const [yPos, setYPos] = useState('0px');
-    const [showMenu, setShowMenu] = useState(false);
 
     const handleContextMenu = useCallback(
         (e) => {
             e.preventDefault();
 
+            console.log('Setting new pointer position...');
             setXPos(`${e.pageX}px`);
             setYPos(`${e.pageY}px`);
-            setShowMenu(true);
+            setVisibility(true);
         },
-        [setXPos, setYPos]
+        [setXPos, setYPos, setVisibility]
     );
 
-    const handleClick = useCallback(() => {
-        showMenu && setShowMenu(false);
-    }, [showMenu]);
+    const handleClickWithin = useCallback(
+        (event) => {
+            event.preventDefault();
+
+            console.log('Hiding the contextmenu because of the internal click event...');
+            setVisibility(false);
+        },
+        [setVisibility]
+    );
 
     useEffect(() => {
-        document
-            .querySelectorAll('.messageContainer')
-            .forEach((element) => element.addEventListener('click', handleClick));
-        document
-            .querySelectorAll('.messageContainer')
-            .forEach((element) => element.addEventListener('contextmenu', handleContextMenu));
+        const contextmenuinstance = document.querySelector(`${identifier}`);
+        console.log('contextMenu Instance => ', contextmenuinstance);
+        console.log('Adding contextmenu listener...');
+        contextmenuinstance.addEventListener('contextmenu', handleContextMenu);
+        console.log('Adding click listener...');
+        contextmenuinstance.addEventListener('click', handleClickWithin);
 
         return () => {
-            document
-                .querySelectorAll('.messageContainer')
-                .forEach((element) => element.removeEventListener('click', handleClick));
-            document
-                .querySelectorAll('.messageContainer')
-                .forEach((element) =>
-                    element.removeEventListener('contextmenu', handleContextMenu)
-                );
+            console.log('Removing contextmenu listener...');
+            contextmenuinstance.removeEventListener('contextmenu', handleContextMenu);
+            console.log('Removing click listener...');
+            contextmenuinstance.removeEventListener('click', handleClickWithin);
         };
-    });
-
-    return { xPos, yPos, showMenu };
-};
-
-export const useContextMenu = (identifier) => {
-    const [xPos, setXPos] = useState('0px');
-    const [yPos, setYPos] = useState('0px');
-    const [showMenu, setShowMenu] = useState(false);
-
-    const handleContextMenu = useCallback(
-        (e) => {
-            e.preventDefault();
-
-            setXPos(`${e.pageX}px`);
-            setYPos(`${e.pageY}px`);
-            setShowMenu(true);
-        },
-        [setXPos, setYPos]
-    );
-
-    useEffect(() => {
-        const contextmenuinstance = document.querySelector(`.${identifier}`);
-        contextmenuinstance.addEventListener('contextmenu', handleContextMenu);
-
-        console.log('Context Menu Instance => ', contextmenuinstance);
-        console.log('LOaded contextmenu eventlisteners');
-
-        return () => contextmenuinstance.removeEventListener('contextmenu', handleContextMenu);
     }, []);
 
-    return {
-        xPos,
-        yPos,
-        showMenu,
-    };
+    return { xPos, yPos };
 };

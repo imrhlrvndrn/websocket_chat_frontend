@@ -2,7 +2,7 @@ import React from 'react';
 import { useModalManager, useTheme } from '../../../context';
 
 // styles
-import { Flex } from '../../../styledcomponents';
+import { Flex } from '../../../styled_components';
 import { ModalContainer } from './modal.styledcomponent';
 
 // components

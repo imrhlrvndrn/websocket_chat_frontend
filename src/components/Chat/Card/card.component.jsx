@@ -2,7 +2,7 @@ import React from 'react';
 
 // components
 import { Avatar } from '../../';
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 
 // Styled components
 import StyledSidebarChat from './card.styledcomponent';

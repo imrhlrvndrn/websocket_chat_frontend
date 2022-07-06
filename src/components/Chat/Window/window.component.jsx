@@ -23,7 +23,7 @@ import {
 
 // React components
 import { Avatar, Button, Input, Messages, ChatInformation } from '../..';
-import { Container, Text } from '../../../styledcomponents';
+import { Container, Text } from '../../../styled_components';
 
 export const ChatWindow = ({ messages }) => {
     const [input, setInput] = useState('');

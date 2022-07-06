@@ -4,7 +4,7 @@ import { useDebounce } from '../../../hooks';
 import { useAuthentication, useChat, useModalManager, useTheme } from '../../../context';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 
 // components
 import { Modal, Input, UserPill, Avatar, Option, Button } from '../../';

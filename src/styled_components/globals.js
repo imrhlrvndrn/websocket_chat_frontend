@@ -76,4 +76,14 @@ export const GlobalStyles = createGlobalStyle`
         font-size: 0.8rem;
     }
     
+    .icon-button{
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-right: 1rem;
+        background-color: ${(props) => props?.theme?.colors?.mediumBackground};
+    }
 `;

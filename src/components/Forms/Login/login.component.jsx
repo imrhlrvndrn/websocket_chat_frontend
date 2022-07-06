@@ -6,7 +6,7 @@ import { loginUser } from '../../../http';
 import { useAuthentication } from '../../../context';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 
 // components
 import { ArrowRight } from '../../../react_icons';

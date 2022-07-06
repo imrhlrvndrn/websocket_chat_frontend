@@ -1,12 +1,12 @@
-import { fetchChat } from '../../http';
-import { useParams } from 'react-router-dom';
-import React, { useEffect, useRef, useState } from 'react';
+import { execChatOperation, fetchChat } from '../../http';
+import React, { useEffect, useState } from 'react';
 import { AddUserIcon, CloseIcon, LinkIcon } from '../../react_icons';
 import { getChatAvatar, getDMChatName } from '../Sidebar/sidebar.utils';
 import { useAuthentication, useChat, useModalManager, useTheme } from '../../context';
+import { ReactComponent as ArrowRight } from '../../react_icons/arrow_right.svg';
 
 // Styled components
-import { Flex, Text } from '../../styledcomponents';
+import { Flex, Text } from '../../styled_components';
 import {
     StyledChatInfo,
     ChatInfoHeader,
@@ -15,40 +15,18 @@ import {
 } from './chatinformation.styledcomponent';
 
 // components
-import { ContextMenu, TextAvatar } from '..';
+import { TextAvatar } from '..';
+import { DropdownMenu } from '../Dropdown/dropdown.component';
 
 // Images
 
 export const ChatInformation = (props) => {
-    const inputRef = useRef(null);
-    const formRef = useRef(null);
     const [{ theme }] = useTheme();
-    const [{ open_chat }] = useChat();
+    const [{ open_chat }, chatDispatch] = useChat();
     const { showModal } = useModalManager();
     const [{ user }] = useAuthentication();
     const [isBlocked, setIsBlocked] = useState(false);
-
-    // const chatInfoDetails =
-    //     chatDetails?.members?.length <= 2
-    //         ? [
-    //               { title: '', content: `${chatInfoMember?.name}` },
-    //               { title: 'About', content: `${chatInfoMember?.bio}` },
-    //               { title: 'Email', content: `${chatInfoMember?.email}` },
-    //           ]
-    //         : [
-    //               { title: '', content: `${chatDetails?.name}` },
-    //               { title: 'Description', content: `${chatDetails?.description}` },
-    //               {
-    //                   title: `${chatDetails?.members?.length} Participants`,
-    //                   content: chatDetails?.members,
-    //               },
-    //           ];
-
-    // useEffect(() => {
-    //     console.log('cahtinfo memebrid: ', chatInfoMember?.memberId);
-    //     if (user?.blocked_contacts?.includes(chatInfoMember?.memberId)) setIsBlocked(true);
-    //     else setIsBlocked(false);
-    // }, [chatInfoMember]);
+    const [dropdownMapping, setDropdownMapping] = useState([]);
 
     // ! Write logic to avoid blocking the same person again and again
     const blockContact = () => {
@@ -80,16 +58,88 @@ export const ChatInformation = (props) => {
 
     const exitGroup = () => {};
 
+    const renderChatMembers = () => {
+        return open_chat?.users?.map((user) => (
+            <TextAvatar
+                key={user?._id}
+                id={`_${user?._id}`}
+                img={{
+                    url:
+                        user?.avatar ||
+                        'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
+                    alt: 'user avatar',
+                    margin: '0 1rem 0 0',
+                }}
+                margin='0 0 1rem 0'
+            >
+                <Text>{user?.full_name}</Text>
+                <ArrowRight
+                    onClick={() =>
+                        setDropdownMapping((prevState) =>
+                            prevState?.map((menu) =>
+                                menu?.user === user?._id
+                                    ? { ...menu, visible: !menu?.visible }
+                                    : menu
+                            )
+                        )
+                    }
+                    style={{ cursor: 'pointer', stroke: theme?.colors?.icon }}
+                />
+                <DropdownMenu
+                    menus={[
+                        {
+                            label: 'Message',
+                            event_handler: () => {},
+                        },
+                        {
+                            label: 'Remove from group',
+                            event_handler: async () => {
+                                try {
+                                    const {
+                                        data: { success, data },
+                                    } = await execChatOperation({
+                                        chatId: open_chat?._id,
+                                        action: 'remove-user',
+                                        data: {
+                                            remove_members: [user?._id],
+                                        },
+                                    });
+                                    if (success)
+                                        chatDispatch({
+                                            type: 'SET_OPEN_CHAT',
+                                            payload: {
+                                                ...open_chat,
+                                                users: open_chat?.users?.filter(
+                                                    (filterUser) => user?._id !== filterUser?._id
+                                                ),
+                                            },
+                                        });
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            },
+                        },
+                    ]}
+                    setDropdownMapping={setDropdownMapping}
+                    visible={dropdownMapping?.find((menu) => menu?.user === user?._id)?.visible}
+                />
+            </TextAvatar>
+        ));
+    };
+
+    useEffect(() => {
+        setDropdownMapping((prevState) =>
+            open_chat?.users?.map((user) => ({ user: user?._id, visible: false }))
+        );
+    }, [open_chat?.users]);
+
+    console.log('dropdownMapping => ', dropdownMapping);
+
     return (
         <StyledChatInfo>
             <ChatInfoHeader>
-                <CloseIcon
-                    onClick={() => dispatch({ type: 'SET_CHAT_INFO', chatInfo: !chatInfo })}
-                />
-                <Text>
-                    {/* {chatDetails?.members?.length <= 2 ? 'Chat info' : 'Group info'} */}
-                    Chat Info
-                </Text>
+                <CloseIcon onClick={() => {}} />
+                <Text>{!open_chat?.is_group_chat ? 'Chat info' : 'Group info'}</Text>
             </ChatInfoHeader>
             <ChatInfoBody>
                 <img
@@ -135,7 +185,11 @@ export const ChatInformation = (props) => {
                                 </Flex>
                                 <Text>Add members</Text>
                             </Flex>
-                            <Flex hover={{ cursor: 'pointer' }} margin='0 0 1rem 0'>
+                            <Flex
+                                hover={{ cursor: 'pointer' }}
+                                margin='0 0 1rem 0'
+                                onClick={() => showModal('CREATE_GROUP_INVITE')}
+                            >
                                 <Flex
                                     width='50px'
                                     height='50px'
@@ -151,57 +205,8 @@ export const ChatInformation = (props) => {
                             </Flex>
                         </>
                     )}
-                    {open_chat?.users?.map((user) => (
-                        <ContextMenu menu={['hello', 'bye']}>
-                            <TextAvatar
-                                img={{
-                                    url:
-                                        user?.avatar ||
-                                        'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
-                                    alt: 'user avatar',
-                                    margin: '0 1rem 0 0',
-                                }}
-                                margin='0 0 1rem 0'
-                            >
-                                <Text>{user?.full_name}</Text>
-                            </TextAvatar>
-                        </ContextMenu>
-                    ))}
+                    {renderChatMembers()}
                 </ChatParticipantsContainer>
-                {/* <img src={open_chat?.photoURL || WhatsAppDefault} alt={open_chat?.name} /> */}
-                {/* {chatInfoDetails.map(({ title, content }) => (
-                    <ChatInfoContentGroup title={title} content={content} />
-                ))} */}
-                {/* {open_chat?.members?.length <= 2 ? (
-                    user?.userId !== chatInfoMember?.memberId && (
-                        <ChatInfoContentGroup
-                            content={isBlocked ? 'Unblock' : 'Block'}
-                            color='239, 105, 122'
-                            onClick={() => {
-                                isBlocked ? unblockContact() : blockContact();
-                                setIsBlocked(!isBlocked);
-                            }}
-                        />
-                    )
-                ) : (
-                    // ! Write more logic for this
-                    <ChatInfoContentGroup
-                        content='Exit Group'
-                        color='239, 105, 122'
-                        onClick={exitGroup}
-                    />
-                )} */}
-                <form
-                    ref={formRef}
-                    onSubmit={(event) => {
-                        event.preventDefault();
-                        console.log('The form is submitted!!!!');
-                    }}
-                >
-                    <input type='submit' ref={inputRef} />
-                </form>
-
-                <button onClick={() => inputRef.current.click()}>Submit the form</button>
             </ChatInfoBody>
         </StyledChatInfo>
     );

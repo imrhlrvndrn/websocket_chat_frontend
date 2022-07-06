@@ -3,7 +3,7 @@ import { activateAccount } from '../../../../http';
 import { useAuthentication, useTheme } from '../../../../context';
 
 // styles
-import { Container, Text, Flex } from '../../../../styledcomponents';
+import { Container, Text, Flex } from '../../../../styled_components';
 
 // components
 // import { ArrowRight, EditIcon } from '../../../../react_icons';

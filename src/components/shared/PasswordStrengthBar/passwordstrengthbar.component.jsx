@@ -6,7 +6,7 @@ import { generateBars } from './passwordstrengthbar.utils';
 import { usePasswordStrength } from '../../../hooks';
 
 // styles
-import { Flex } from '../../../styledcomponents';
+import { Flex } from '../../../styled_components';
 import { StrengthBar } from './passwordstrengthbar.styledcomponent';
 
 export const PasswordStrengthBar = ({

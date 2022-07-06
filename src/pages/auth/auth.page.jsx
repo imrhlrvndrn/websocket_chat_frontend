@@ -7,7 +7,7 @@ import { AuthenticationPage } from './auth.styledcomponent';
 
 // components
 import { Login, Register } from '../../components';
-import { Flex } from '../../styledcomponents';
+import { Flex } from '../../styled_components';
 
 export const Auth = () => {
     const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { CloseIcon } from '../../../react_icons';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 
 // components
 import { Avatar } from '../../';

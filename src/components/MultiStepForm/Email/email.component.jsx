@@ -3,7 +3,7 @@ import { sendOtp } from '../../../http';
 import { useTheme, useAuthentication } from '../../../context';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 
 // components
 import { Button, Input } from '../..';

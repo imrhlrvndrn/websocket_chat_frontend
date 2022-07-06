@@ -5,7 +5,7 @@ import { useTheme } from '../../../context';
 import { OptionChecked, OptionUnchecked } from '../../../react_icons';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 import { OptionLabel } from './option.styledcomponent';
 
 export const Option = ({ children, onClick }) => {

@@ -25,8 +25,9 @@ export { Card, CardContent, CardHeader } from './Forms/Layout/formlayout.compone
 
 // Modals
 export { Modal } from './Modals/Modal/modal.component';
-export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.component';
 export { AddParticipant } from './Modals/AddParticipant/addparticipant.component';
+export { CreateGroupChat } from './Modals/CreateGroupChat/creategroupchat.component';
+export { CreateGroupInvite } from './Modals/CreateGroupInvite/creategroupinvite.component';
 
 // shared
 export { Link } from './shared/Link/link.component';

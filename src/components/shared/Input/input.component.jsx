@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // styles
-import { Flex, Text } from '../../../styledcomponents';
+import { Flex, Text } from '../../../styled_components';
 import { InputField, InputContainer, PasswordFieldToggle } from './input.styledcomponent';
 
 // components

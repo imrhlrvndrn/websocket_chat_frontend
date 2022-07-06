@@ -6,7 +6,7 @@ import { createChat, getUserChats, searchUsers } from '../../http';
 import { useAuthentication, useChat, useModalManager } from '../../context';
 
 // Styled conponents
-import { Flex, Text } from '../../styledcomponents';
+import { Flex, Text } from '../../styled_components';
 import StyledSidebar from './sidebar.styledcomponent';
 
 // components

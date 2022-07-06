@@ -2,7 +2,7 @@ import lottie from 'lottie-web';
 import { useEffect, useRef } from 'react';
 
 // styled components
-import { Flex } from '../../../../styledcomponents';
+import { Flex } from '../../../../styled_components';
 
 // components
 import { Modal, Button, Input } from '../../..';
@@ -26,7 +26,7 @@ export const SuccessStep = ({ title = { content: 'Operation successful!', visibl
         animationInstance.play();
         animationInstance.setSpeed(1);
 
-        () => animationInstance.destroy();
+        return () => animationInstance.destroy();
     }, []);
 
     return (
