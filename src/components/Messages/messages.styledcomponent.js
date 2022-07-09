@@ -1,37 +1,25 @@
 import styled from 'styled-components';
 
 export default styled.div`
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
+    margin-left: ${(props) => (props?.selfMessage ? 'auto' : '0')};
     padding: 1rem;
-    background-color: ${(props) => props.theme.colors.lightestBackground};
+    background-color: ${(props) =>
+        props?.selfMessage
+            ? props?.theme?.colors?.constants?.primary?.medium
+            : props?.theme?.colors?.lightBackground};
     width: max-content;
-    max-width: 50%;
-    border-radius: 10px;
-
-    &.chat__receiver {
-        margin: 0 0 0.3rem auto;
-        background-color: ${(props) => props.theme.colors.constants.primary.light};
-
-        &:first-of-type {
-            margin: 1rem 0 0.3rem auto;
-        }
-    }
+    max-width: 90%;
+    word-wrap: wrap;
+    border-radius: ${(props) => (props?.selfMessage ? '10px 10px 0 10px' : '10px 10px 10px 0')};
 
     &:first-child {
-        margin-top: 0.3rem;
-    }
-
-    .userName {
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        text-transform: capitalize;
-        color: ${(props) => props.theme.colors.constants.primary.medium};
+        margin-top: 0.5rem;
     }
 
     .message {
         margin-bottom: 0.5rem;
-        color: rgb(${(props) => props.theme.constants.darkText});
+        color: ${(props) => props?.theme?.colors?.text};
     }
 
     .timestamp {
@@ -41,13 +29,13 @@ export default styled.div`
 
         p {
             font-size: 0.8rem;
-            opacity: ${(props) => (props.read ? '.8' : '.2')};
+            opacity: ${(props) => (props.read ? '1' : '1')};
             fill: ${(props) => (props.read ? 'blue' : 'black')};
-            color: rgb(${(props) => props.theme.constants.darkText});
+            color: ${(props) => props?.theme?.colors?.text};
         }
 
         svg {
-            opacity: 0.2;
+            opacity: 0.8;
             margin-left: 1rem;
         }
     }

@@ -1,7 +1,7 @@
 import { useDebounce } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { getChatAvatar, getDMChatName } from './sidebar.utils';
+import { getChatAvatar, getChatName } from '../../utils';
 import { createChat, getUserChats, searchUsers } from '../../http';
 import { useAuthentication, useChat, useModalManager } from '../../context';
 
@@ -129,21 +129,19 @@ export const Sidebar = () => {
                             padding='1rem'
                             img={{
                                 margin: '0 1rem 0 0',
-                                url: chat?.is_group_chat
-                                    ? chat?.avatar ||
-                                      'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                                    : getChatAvatar({ logged_user: user, chat_users: chat?.users }),
+                                url: getChatAvatar({
+                                    chat,
+                                    logged_user: user,
+                                }),
                                 alt: `${chat?.title} avatar`,
                             }}
                         >
                             <Flex direction='column' style={{ zIndex: 0, flex: 1 }}>
                                 <Text as='h2' weight='medium'>
-                                    {chat?.is_group_chat
-                                        ? chat?.name
-                                        : getDMChatName({
-                                              logged_user: user,
-                                              chat_users: chat?.users,
-                                          })}
+                                    {getChatName({
+                                        chat,
+                                        logged_user: user,
+                                    })}
                                 </Text>
                                 <Text
                                     opacity='0.6'

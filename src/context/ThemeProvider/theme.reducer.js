@@ -21,7 +21,11 @@ export const initialThemeState = {
 
                 purple: '91, 87, 115',
                 yellow: '252,192,0',
-                danger: '255,14,87',
+                danger: {
+                    light: 'hsl(0, 100%, 70%)',
+                    medium: 'hsl(0, 100%, 65%)',
+                    dark: 'hsl(0, 100%, 50%)',
+                },
                 success: '0,162,184',
             },
         },

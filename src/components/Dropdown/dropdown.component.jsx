@@ -9,29 +9,18 @@ import { Dropdown, DropdownItem } from './dropdown.styledcomponent';
 
 export const DropdownMenu = ({ visible, setDropdownMapping, menus }) => {
     const [{ theme }] = useTheme();
-    const { visibility, setVisibility, elementRef } = useExternalEventDetector(['click'], () => {
-        setVisibility(false);
-        setDropdownMapping((prevState) =>
-            prevState?.map((menu) => (menu?.visible ? { ...menu, visible: false } : menu))
-        );
-    });
 
     const captureDropdownMenuItemEvents = (event, menu_item) => {
-        setVisibility(false);
         setDropdownMapping((prevState) =>
             prevState?.map((menu) => (menu?.visible ? { ...menu, visible: false } : menu))
         );
         menu_item?.event_handler();
     };
 
-    useEffect(() => {
-        setVisibility(() => visible);
-    }, [visible, setVisibility]);
-
     return (
         <Fragment>
-            {visible && visibility && (
-                <Dropdown ref={elementRef}>
+            {visible && (
+                <Dropdown>
                     {menus?.map((menu_item) => (
                         <DropdownMenuItem
                             left_icon={

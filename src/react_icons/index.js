@@ -14,8 +14,5 @@ export { MoreOptionsIcon } from './MoreOptionsIcon';
 export { MicIcon } from './MicIcon';
 export { OptionUnchecked } from './OptionUnchecked';
 export { OptionChecked } from './OptionChecked';
-export { CloseIcon } from './CloseIcon';
 export { InfoIcon } from './InfoIcon';
-export { AddUserIcon } from './AddUserIcon';
 export { NewGroupIcon } from './NewGroupIcon';
-export { LinkIcon, ExternalLinkIcon } from './LinkIcon';

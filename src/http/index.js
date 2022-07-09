@@ -32,6 +32,9 @@ export const createChat = (chat_data) => axios.post('/api/chat', chat_data);
 export const fetchChat = (chat_id) => axios.get(`/api/chat/${chat_id}`);
 export const execChatOperation = ({ chatId = '', action = '', data = {} }) =>
     axios.post(`/api/chat/${chatId}/${action}`, data);
+export const getMessages = (chat_id = '') => axios.get(`/api/message/${chat_id}`);
+export const execMessageOperation = ({ chat_id = '', action = '', data = {} }) =>
+    axios.post(`/api/message/${chat_id}/${action}`, data);
 
 // Interceptors
 axios.interceptors.response.use(

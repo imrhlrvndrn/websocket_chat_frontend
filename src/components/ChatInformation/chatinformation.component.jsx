@@ -1,9 +1,13 @@
 import { execChatOperation, fetchChat } from '../../http';
 import React, { useEffect, useState } from 'react';
-import { AddUserIcon, CloseIcon, LinkIcon } from '../../react_icons';
-import { getChatAvatar, getDMChatName } from '../Sidebar/sidebar.utils';
+import { getChatAvatar, getChatName } from '../../utils';
 import { useAuthentication, useChat, useModalManager, useTheme } from '../../context';
+
+// icons
 import { ReactComponent as ArrowRight } from '../../react_icons/arrow_right.svg';
+import { ReactComponent as CloseIcon } from '../../react_icons/close-24px.svg';
+import { ReactComponent as AddUserIcon } from '../../react_icons/add_user.svg';
+import { ReactComponent as LinkIcon } from '../../react_icons/link.svg';
 
 // Styled components
 import { Flex, Text } from '../../styled_components';
@@ -17,16 +21,21 @@ import {
 // components
 import { TextAvatar } from '..';
 import { DropdownMenu } from '../Dropdown/dropdown.component';
+import { useExternalEventDetector } from '../../hooks';
 
 // Images
 
-export const ChatInformation = (props) => {
+export const ChatInformation = ({ setShowChatInfo }) => {
     const [{ theme }] = useTheme();
     const [{ open_chat }, chatDispatch] = useChat();
     const { showModal } = useModalManager();
     const [{ user }] = useAuthentication();
     const [isBlocked, setIsBlocked] = useState(false);
     const [dropdownMapping, setDropdownMapping] = useState([]);
+    const { elementRef } = useExternalEventDetector([
+        'click',
+        () => setShowChatInfo((prevState) => false),
+    ]);
 
     // ! Write logic to avoid blocking the same person again and again
     const blockContact = () => {
@@ -136,29 +145,22 @@ export const ChatInformation = (props) => {
     console.log('dropdownMapping => ', dropdownMapping);
 
     return (
-        <StyledChatInfo>
+        <StyledChatInfo ref={elementRef}>
             <ChatInfoHeader>
-                <CloseIcon onClick={() => {}} />
+                <CloseIcon
+                    style={{ fill: theme?.colors?.icon }}
+                    onClick={() => setShowChatInfo((prevState) => !prevState)}
+                />
                 <Text>{!open_chat?.is_group_chat ? 'Chat info' : 'Group info'}</Text>
             </ChatInfoHeader>
             <ChatInfoBody>
                 <img
-                    src={
-                        open_chat?.is_group_chat
-                            ? open_chat?.avatar ||
-                              'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
-                            : getChatAvatar({ logged_user: user, chat_users: open_chat?.users })
-                    }
+                    src={getChatAvatar({ logged_user: user, chat: open_chat })}
                     alt='user avatar'
                     className='chatAvatar'
                 />
                 <Text align='center' size='heading4/large'>
-                    {open_chat?.is_group_chat
-                        ? open_chat?.name
-                        : getDMChatName({
-                              logged_user: user,
-                              chat_users: open_chat?.users,
-                          })}
+                    {getChatName({ logged_user: user, chat: open_chat })}
                 </Text>
                 <Text align='center' size='body/small' opacity='0.6'>
                     {open_chat?.users?.length} participants
@@ -181,7 +183,7 @@ export const ChatInformation = (props) => {
                                         backgroundColor: theme?.colors?.constants?.primary?.medium,
                                     }}
                                 >
-                                    <AddUserIcon color={theme?.colors?.icon} />
+                                    <AddUserIcon style={{ fill: theme?.colors?.icon }} />
                                 </Flex>
                                 <Text>Add members</Text>
                             </Flex>
@@ -206,6 +208,24 @@ export const ChatInformation = (props) => {
                         </>
                     )}
                     {renderChatMembers()}
+                    {open_chat?.is_group_chat && (
+                        <Flex
+                            margin='4rem 0 0 0'
+                            padding='1rem 0'
+                            borderRadius='10px'
+                            style={{
+                                cursor: 'pointer',
+                                backgroundColor: theme?.colors?.lightBackground,
+                            }}
+                        >
+                            <Text
+                                width='max-content'
+                                color={theme?.colors?.constants?.danger?.medium}
+                            >
+                                Leave group
+                            </Text>
+                        </Flex>
+                    )}
                 </ChatParticipantsContainer>
             </ChatInfoBody>
         </StyledChatInfo>

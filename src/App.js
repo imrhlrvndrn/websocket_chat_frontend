@@ -6,19 +6,10 @@ import { axios } from './config';
 import { Auth, MainApp } from './pages';
 
 const App = () => {
-    const [messages, setMessages] = useState([]);
-
-    // useEffect(() => {
-    //     axios
-    //         .get('/messages/sync')
-    //         .then((response) => setMessages(response.data))
-    //         .catch((err) => console.log(err));
-    // }, []);
-
     return (
         <Routes>
-            <Route exact path='/' element={<MainApp messages={messages} />} />
-            <Route exact path='/:chatId' element={<MainApp messages={messages} />} />
+            <Route exact path='/' element={<MainApp />} />
+            <Route exact path='/:chatId' element={<MainApp />} />
             <Route exact path='authenticate' element={<Auth />} />
         </Routes>
     );

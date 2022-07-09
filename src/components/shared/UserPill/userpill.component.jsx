@@ -1,4 +1,4 @@
-import { CloseIcon } from '../../../react_icons';
+import { ReactComponent as CloseIcon } from '../../../react_icons/close-24px.svg';
 
 // styles
 import { Flex, Text } from '../../../styled_components';
@@ -26,7 +26,7 @@ export const UserPill = ({ user, onClose }) => {
             <Text size='body/small' width='max-content'>
                 {user?.full_name}
             </Text>
-            <CloseIcon color={theme?.colors?.text} onClick={() => onClose()} />
+            <CloseIcon style={{ fill: theme?.colors?.icon }} onClick={() => onClose()} />
         </Flex>
     );
 };

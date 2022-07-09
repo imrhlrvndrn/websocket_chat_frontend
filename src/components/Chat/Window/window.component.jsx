@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { axios } from '../../../config';
-import { useModalManager } from '../../../context';
+import io from 'socket.io-client';
+import { getChatAvatar, getChatName } from '../../../utils';
+import { useAuthentication, useChat } from '../../../context';
 
 // React icons
 import {
@@ -13,6 +15,7 @@ import {
 } from '../../../react_icons';
 
 // Styled components
+import { Container, Text } from '../../../styled_components';
 import {
     ChatMessageInputForm,
     ChatWindowBody,
@@ -23,64 +26,115 @@ import {
 
 // React components
 import { Avatar, Button, Input, Messages, ChatInformation } from '../..';
-import { Container, Text } from '../../../styled_components';
+import { getMessages } from '../../../http';
 
-export const ChatWindow = ({ messages }) => {
-    const [input, setInput] = useState('');
-    const { showModal } = useModalManager();
+const dummyMessages = [
+    {
+        sender: { _id: '621a05cede4976eb22c1a643', full_name: 'Rahul Ravindran' },
+        content:
+            'Hey everyone had fun today! Thank you for the delightful day. Thank you thank you sooooo soooo much guys. I wont forget today',
+    },
+    {
+        sender: { _id: '1', full_name: 'Rahul Ravindran' },
+        content: 'Hey everyone had fun today! Thank you for the delightful day',
+    },
+];
+
+export const ChatWindow = () => {
+    const [{ open_chat }] = useChat();
+    const [{ user }] = useAuthentication();
+    const [messages, setMessages] = useState([]);
+    const [messageInput, setMessageInput] = useState('');
+    const [showChatInfo, setShowChatInfo] = useState(false);
+    const [isSocketConnected, setIsSocketConnected] = useState(false);
+
+    let socket;
 
     const sendMessage = (event) => {
         event.preventDefault();
 
-        if (input === '') return;
+        if (messageInput === '') return;
 
         axios
             .post('/messages/new', {
-                message: input,
+                message: messageInput,
                 name: 'Rahul Ravindran',
                 received: true,
             })
             .then(() => {
-                setInput('');
+                setMessageInput('');
             });
     };
+
+    const fetchChatMessages = async () => {
+        try {
+            if (open_chat?.latest_message) {
+                const {
+                    data: { success, data },
+                } = await getMessages(open_chat?._id);
+                if (success) {
+                    setMessages((prevState) => data?.messages);
+                    console.log('chat messages => ', data?.messages);
+                    socket.emit('join chat', open_chat?._id);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        socket = io('http://localhost:4000');
+        socket.emit('user initialization', user);
+        socket.on('user initialized', () => setIsSocketConnected(true));
+        // socket.on('typing', () => setIsTyping(true));
+        // socket.on('stop typing', () => setIsTyping(false));
+    }, []);
+
+    useEffect(() => {
+        (async () => await fetchChatMessages())();
+    }, [open_chat?._id]);
 
     return (
         <StyledChatWindow>
             <ChatWindowHeader>
                 <Avatar
                     margin='0 1rem 0 0'
-                    width='45px'
-                    height='45px'
-                    imgUrl='https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80'
+                    size='50px'
+                    altText={open_chat?.name}
+                    url={getChatAvatar({
+                        logged_user: user,
+                        chat: open_chat,
+                    })}
                 />
                 <Container style={{ flex: 1 }}>
-                    <Text as='h2' weight='bold'>
-                        Room name
+                    <Text as='h2' weight='medium'>
+                        {getChatName({ logged_user: user, chat: open_chat })}
                     </Text>
                     <Text size='caption/large'>Last seen at ...</Text>
                 </Container>
                 <>
-                    {/* <AttachmentIcon /> */}
-                    {/* <SearchIcon /> */}
-                    <InfoIcon onClick={() => showModal('CHAT_INFORMATION')} />
-                    {/* <MoreOptionsIcon /> */}
+                    <AttachmentIcon />
+                    <SearchIcon />
+                    <InfoIcon onClick={() => setShowChatInfo((prevState) => !prevState)} />
+                    <MoreOptionsIcon />
                 </>
             </ChatWindowHeader>
 
             <ChatWindowBody>
-                {messages.map((message) => (
+                {messages?.map((message) => (
                     <Messages message={message} />
+                    // <Text>{message}</Text>
                 ))}
-                <div id='messagesEnd' style={{ visibility: 'hidden' }}></div>
+                {/* <div id='messagesEnd' style={{ visibility: 'hidden' }}></div> */}
             </ChatWindowBody>
 
             <ChatWindowMessageContainer>
                 <SmileIcon />
                 <ChatMessageInputForm>
                     <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        value={messageInput}
+                        onChange={(e) => setMessageInput(e.target.value)}
                         type='text'
                         name='chatbarInput'
                         id='chatbarInput'
@@ -94,7 +148,7 @@ export const ChatWindow = ({ messages }) => {
                 </ChatMessageInputForm>
                 <MicIcon />
             </ChatWindowMessageContainer>
-            <ChatInformation />
+            {showChatInfo && <ChatInformation setShowChatInfo={setShowChatInfo} />}
         </StyledChatWindow>
     );
 };

@@ -25,15 +25,14 @@ export const ChatWindowHeader = styled.div`
 `;
 
 export const ChatWindowBody = styled.div`
-    width: 100%;
+    // width: 100%;
     padding: 0 1rem;
-    /* background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
     background-color: ${(props) => props.theme.colors.mediumBackground};
     overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     flex: 1;
 
     /* width */
