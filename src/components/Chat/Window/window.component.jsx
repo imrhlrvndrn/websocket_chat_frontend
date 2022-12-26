@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { axios } from '../../../config';
 import io from 'socket.io-client';
 import { getChatAvatar, getChatName } from '../../../utils';
 import { useAuthentication, useChat } from '../../../context';
@@ -26,7 +25,7 @@ import {
 
 // React components
 import { Avatar, Button, Input, Messages, ChatInformation } from '../..';
-import { getMessages } from '../../../http';
+import { execMessageOperation, getMessages } from '../../../http';
 
 const dummyMessages = [
     {
@@ -39,6 +38,7 @@ const dummyMessages = [
         content: 'Hey everyone had fun today! Thank you for the delightful day',
     },
 ];
+let socket = io('http://localhost:4000');
 
 export const ChatWindow = () => {
     const [{ open_chat }] = useChat();
@@ -48,52 +48,56 @@ export const ChatWindow = () => {
     const [showChatInfo, setShowChatInfo] = useState(false);
     const [isSocketConnected, setIsSocketConnected] = useState(false);
 
-    let socket;
-
-    const sendMessage = (event) => {
+    const sendMessage = async (event) => {
         event.preventDefault();
 
         if (messageInput === '') return;
 
-        axios
-            .post('/messages/new', {
-                message: messageInput,
-                name: 'Rahul Ravindran',
-                received: true,
-            })
-            .then(() => {
-                setMessageInput('');
-            });
+        const {
+            data: { success, data },
+        } = await execMessageOperation({
+            chat_id: open_chat?._id,
+            action: 'new',
+            data: { content: messageInput },
+        });
+        if (success) {
+            socket.emit('new message', data?.message);
+            console.log(`Emitted new message`);
+            setMessages((prevState) => [...prevState, data?.message]);
+            setMessageInput('');
+        }
     };
 
     const fetchChatMessages = async () => {
         try {
-            if (open_chat?.latest_message) {
-                const {
-                    data: { success, data },
-                } = await getMessages(open_chat?._id);
-                if (success) {
-                    setMessages((prevState) => data?.messages);
-                    console.log('chat messages => ', data?.messages);
-                    socket.emit('join chat', open_chat?._id);
-                }
+            // if (open_chat?.latest_message) {
+            const {
+                data: { success, data },
+            } = await getMessages(open_chat?._id);
+            if (success) {
+                setMessages(() => data?.messages);
+                socket.emit('join chat', open_chat?._id);
+                console.log(`Joined chat ${open_chat?._id}`);
+                // console.log('chat messages => ', data?.messages);
+                // console.log('Socket => ', socket);
             }
+            // }
         } catch (error) {
             console.error(error);
         }
     };
 
     useEffect(() => {
-        socket = io('http://localhost:4000');
-        socket.emit('user initialization', user);
-        socket.on('user initialized', () => setIsSocketConnected(true));
-        // socket.on('typing', () => setIsTyping(true));
-        // socket.on('stop typing', () => setIsTyping(false));
-    }, []);
-
-    useEffect(() => {
+        setMessages([]);
         (async () => await fetchChatMessages())();
     }, [open_chat?._id]);
+
+    useEffect(() => {
+        socket.on('receive message', (new_message) => {
+            console.log('Received a new message => ', { new_message, messages });
+            setMessages((prevState) => [...prevState, new_message]);
+        });
+    }, [socket]);
 
     return (
         <StyledChatWindow>
@@ -110,6 +114,7 @@ export const ChatWindow = () => {
                 <Container style={{ flex: 1 }}>
                     <Text as='h2' weight='medium'>
                         {getChatName({ logged_user: user, chat: open_chat })}
+                        {isSocketConnected && ' Initialized'}
                     </Text>
                     <Text size='caption/large'>Last seen at ...</Text>
                 </Container>
@@ -123,7 +128,7 @@ export const ChatWindow = () => {
 
             <ChatWindowBody>
                 {messages?.map((message) => (
-                    <Messages message={message} />
+                    <Messages key={message?._id} message={message} />
                     // <Text>{message}</Text>
                 ))}
                 {/* <div id='messagesEnd' style={{ visibility: 'hidden' }}></div> */}
@@ -134,13 +139,18 @@ export const ChatWindow = () => {
                 <ChatMessageInputForm>
                     <Input
                         value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
+                        onChange={(e) => setMessageInput(e?.target?.value)}
                         type='text'
                         name='chatbarInput'
                         id='chatbarInput'
                         placeholder='Type a message'
                     />
-                    <Button width='220px' height='100%' onClick={sendMessage} type='submit'>
+                    <Button
+                        width='220px'
+                        height='100%'
+                        onClick={(e) => sendMessage(e)}
+                        type='submit'
+                    >
                         <Text align='center' size='heading6/large'>
                             Send a message
                         </Text>

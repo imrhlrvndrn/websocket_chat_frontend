@@ -9,6 +9,7 @@ export default styled.div`
             ? props?.theme?.colors?.constants?.primary?.medium
             : props?.theme?.colors?.lightBackground};
     width: max-content;
+    min-width: 200px;
     max-width: 90%;
     word-wrap: wrap;
     border-radius: ${(props) => (props?.selfMessage ? '10px 10px 0 10px' : '10px 10px 10px 0')};
