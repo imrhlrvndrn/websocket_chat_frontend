@@ -38,7 +38,7 @@ const dummyMessages = [
         content: 'Hey everyone had fun today! Thank you for the delightful day',
     },
 ];
-let socket = io('http://localhost:4000');
+let socket = io(process.env.REACT_APP_API_ENDPOINT || 'http://localhost:4000');
 
 export const ChatWindow = () => {
     const [{ open_chat }] = useChat();
