@@ -1,10 +1,10 @@
-import { execChatOperation, fetchChat } from '../../http';
+import { useNavigate } from 'react-router-dom';
+import { createChat, execChatOperation, userBlocking } from '../../http';
 import React, { useEffect, useState } from 'react';
-import { getChatAvatar, getChatName } from '../../utils';
+import { getChatAvatar, getChatName, isUserBlocked } from '../../utils';
 import { useAuthentication, useChat, useModalManager, useTheme } from '../../context';
 
 // icons
-import { ReactComponent as ArrowRight } from '../../react_icons/arrow_right.svg';
 import { ReactComponent as CloseIcon } from '../../react_icons/close-24px.svg';
 import { ReactComponent as AddUserIcon } from '../../react_icons/add_user.svg';
 import { ReactComponent as LinkIcon } from '../../react_icons/link.svg';
@@ -21,119 +21,172 @@ import {
 // components
 import { TextAvatar } from '..';
 import { DropdownMenu } from '../Dropdown/dropdown.component';
-import { useExternalEventDetector } from '../../hooks';
+import { useChatRequests, useExternalEventDetector } from '../../hooks';
+import { MoreOptionsIcon } from '../../react_icons';
 
 // Images
 
 export const ChatInformation = ({ setShowChatInfo }) => {
     const [{ theme }] = useTheme();
-    const [{ open_chat }, chatDispatch] = useChat();
+    const navigate = useNavigate();
+    const { blockUser } = useChatRequests();
+    const [{ open_chat, user_chats }, chatDispatch] = useChat();
     const { showModal } = useModalManager();
-    const [{ user }] = useAuthentication();
-    const [isBlocked, setIsBlocked] = useState(false);
+    const [{ user }, authDispatch] = useAuthentication();
+    const [isBlocked, setIsBlocked] = useState({ value: false, user: '' });
     const [dropdownMapping, setDropdownMapping] = useState([]);
     const { elementRef } = useExternalEventDetector([
         'click',
         () => setShowChatInfo((prevState) => false),
     ]);
+    const same_user = (_id) => _id === user?._id;
+    const is_owner = (_id) => _id === open_chat?.created_by;
+    let dropdownMenu = (user_id) =>
+        !is_owner(user?._id)
+            ? [
+                  {
+                      label: 'Message',
+                      event_handler: () => createNewChatWithUser(user_id),
+                  },
+              ]
+            : [
+                  {
+                      label: 'Message',
+                      event_handler: () => createNewChatWithUser(user_id),
+                  },
+                  {
+                      label: 'Remove from group',
+                      event_handler: async () => {
+                          try {
+                              const {
+                                  data: { success },
+                              } = await execChatOperation({
+                                  chatId: open_chat?._id,
+                                  action: 'remove-user',
+                                  data: {
+                                      remove_members: [user_id],
+                                  },
+                              });
+                              if (success)
+                                  chatDispatch({
+                                      type: 'SET_OPEN_CHAT',
+                                      payload: {
+                                          ...open_chat,
+                                          users: open_chat?.users?.filter(
+                                              (filterUser) => user_id !== filterUser?._id
+                                          ),
+                                      },
+                                  });
+                          } catch (error) {
+                              console.error(error);
+                          }
+                      },
+                  },
+              ];
 
-    // ! Write logic to avoid blocking the same person again and again
-    const blockContact = () => {
-        // ! Update logic to actually remove the property without mutating the Object
-        // db.collection('members')
-        //     .doc(`${user?.userId}`)
-        //     .set(
-        //         {
-        //             blocked_contacts: [...user?.blocked_contacts, chatInfoMember?.memberId],
-        //         },
-        //         { merge: true }
-        //     );
+    const deleteChat = async (chat_id) => {
+        try {
+            const {
+                data: { success },
+            } = await execChatOperation({ chatId: chat_id, action: 'delete' });
+            if (success) {
+                chatDispatch({
+                    type: 'SET_USER_CHATS',
+                    payload: user_chats?.filter((chat) => chat?._id !== chat_id),
+                });
+                navigate('/', { replace: true });
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const unblockContact = () => {
-        // db.collection('members')
-        //     .doc(`${user?.userId}`)
-        //     .set(
-        //         {
-        //             blocked_contacts: [
-        //                 ...user?.blocked_contacts.filter(
-        //                     (member) => member !== chatInfoMember?.memberId
-        //                 ),
-        //             ],
-        //         },
-        //         { merge: true }
-        //     );
+    const exitGroup = async () => {
+        try {
+            const {
+                data: { success },
+            } = await execChatOperation({
+                chatId: open_chat?._id,
+                action: 'remove-user',
+                data: {
+                    remove_members: [user?._id],
+                },
+            });
+            if (success)
+                chatDispatch({
+                    type: 'SET_USER_CHATS',
+                    payload: user_chats?.filter((chat) => chat?._id !== open_chat?._id),
+                });
+            navigate(`/${user_chats[0]?._id}`);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const exitGroup = () => {};
+    const createNewChatWithUser = async (friend_id) => {
+        try {
+            const {
+                data: { success, data },
+            } = await createChat({ action_type: 'CREATE_DM_CHAT', friend_user_id: friend_id });
+
+            if (success) {
+                if (data?.exists) return navigate(`/${data?.chat?._id}`);
+
+                chatDispatch({ type: 'SET_USER_CHATS', payload: [data?.chat, ...user_chats] });
+                navigate(`/${data?.chat?._id}`);
+            }
+        } catch (error) {
+            console.error(error);
+            alert(`Couldn't create chat`);
+        }
+    };
 
     const renderChatMembers = () => {
-        return open_chat?.users?.map((user) => (
-            <TextAvatar
-                key={user?._id}
-                id={`_${user?._id}`}
-                img={{
-                    url:
-                        user?.avatar ||
-                        'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
-                    alt: 'user avatar',
-                    margin: '0 1rem 0 0',
-                }}
-                margin='0 0 1rem 0'
-            >
-                <Text>{user?.full_name}</Text>
-                <ArrowRight
-                    onClick={() =>
-                        setDropdownMapping((prevState) =>
-                            prevState?.map((menu) =>
-                                menu?.user === user?._id
-                                    ? { ...menu, visible: !menu?.visible }
-                                    : menu
-                            )
-                        )
-                    }
-                    style={{ cursor: 'pointer', stroke: theme?.colors?.icon }}
-                />
-                <DropdownMenu
-                    menus={[
-                        {
-                            label: 'Message',
-                            event_handler: () => {},
-                        },
-                        {
-                            label: 'Remove from group',
-                            event_handler: async () => {
-                                try {
-                                    const {
-                                        data: { success, data },
-                                    } = await execChatOperation({
-                                        chatId: open_chat?._id,
-                                        action: 'remove-user',
-                                        data: {
-                                            remove_members: [user?._id],
-                                        },
-                                    });
-                                    if (success)
-                                        chatDispatch({
-                                            type: 'SET_OPEN_CHAT',
-                                            payload: {
-                                                ...open_chat,
-                                                users: open_chat?.users?.filter(
-                                                    (filterUser) => user?._id !== filterUser?._id
-                                                ),
-                                            },
-                                        });
-                                } catch (error) {
-                                    console.error(error);
+        return open_chat?.users?.map((user) => {
+            return (
+                <TextAvatar
+                    key={user?._id}
+                    id={`_${user?._id}`}
+                    img={{
+                        url:
+                            user?.avatar ||
+                            'https://images.unsplash.com/photo-1497551060073-4c5ab6435f12?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80',
+                        alt: 'user avatar',
+                        margin: '0 1rem 0 0',
+                    }}
+                    margin='0 0 1rem 0'
+                >
+                    <Text>
+                        {same_user(user?._id) ? 'You' : user?.full_name}
+                        {is_owner(user?._id) ? ' (Owner)' : ''}
+                    </Text>
+                    {open_chat?.is_group_chat && !same_user(user?._id) && (
+                        <>
+                            <MoreOptionsIcon
+                                onClick={() =>
+                                    setDropdownMapping((prevState) =>
+                                        prevState?.map((menu) =>
+                                            menu?.user === user?._id
+                                                ? { ...menu, visible: !menu?.visible }
+                                                : menu
+                                        )
+                                    )
                                 }
-                            },
-                        },
-                    ]}
-                    setDropdownMapping={setDropdownMapping}
-                    visible={dropdownMapping?.find((menu) => menu?.user === user?._id)?.visible}
-                />
-            </TextAvatar>
-        ));
+                                style={{ cursor: 'pointer', fill: theme?.colors?.icon }}
+                            />
+                            <DropdownMenu
+                                menus={dropdownMenu(user?._id)}
+                                setDropdownMapping={setDropdownMapping}
+                                visible={
+                                    dropdownMapping?.find((menu) => menu?.user === user?._id)
+                                        ?.visible
+                                }
+                            />
+                        </>
+                    )}
+                </TextAvatar>
+            );
+        });
     };
 
     useEffect(() => {
@@ -142,7 +195,17 @@ export const ChatInformation = ({ setShowChatInfo }) => {
         );
     }, [open_chat?.users]);
 
-    console.log('dropdownMapping => ', dropdownMapping);
+    // Check once, if the user is blocked by the logged user
+    useEffect(() => {
+        if (open_chat?.is_group_chat) return;
+
+        const is_blocked = isUserBlocked({ users: open_chat?.users, logged_user: user });
+        // ! Just know who blocked who And only allow the one who initiated the block to unblock. Until then disable the block
+        // ! feature for the other user
+        setIsBlocked(() => is_blocked);
+    }, [open_chat?._id, user?.blocked]);
+
+    console.log('open_chat users => ', open_chat?.users);
 
     return (
         <StyledChatInfo ref={elementRef}>
@@ -209,22 +272,86 @@ export const ChatInformation = ({ setShowChatInfo }) => {
                     )}
                     {renderChatMembers()}
                     {open_chat?.is_group_chat && (
-                        <Flex
-                            margin='4rem 0 0 0'
-                            padding='1rem 0'
-                            borderRadius='10px'
-                            style={{
-                                cursor: 'pointer',
-                                backgroundColor: theme?.colors?.lightBackground,
-                            }}
-                        >
-                            <Text
-                                width='max-content'
-                                color={theme?.colors?.constants?.danger?.medium}
+                        <>
+                            {is_owner(user?._id) && (
+                                <Flex
+                                    margin='2rem 0 0 0'
+                                    padding='1rem 0'
+                                    borderRadius='10px'
+                                    style={{
+                                        cursor: 'pointer',
+                                        backgroundColor: theme?.colors?.lightBackground,
+                                    }}
+                                >
+                                    <Text
+                                        width='max-content'
+                                        color={theme?.colors?.constants?.danger?.medium}
+                                    >
+                                        Delete group
+                                    </Text>
+                                </Flex>
+                            )}
+                            <Flex
+                                margin='1rem 0 0 0'
+                                padding='1rem 0'
+                                borderRadius='10px'
+                                style={{
+                                    cursor: 'pointer',
+                                    backgroundColor: theme?.colors?.lightBackground,
+                                }}
+                                onClick={() => exitGroup()}
                             >
-                                Leave group
-                            </Text>
-                        </Flex>
+                                <Text
+                                    width='max-content'
+                                    color={theme?.colors?.constants?.danger?.medium}
+                                >
+                                    Leave group
+                                </Text>
+                            </Flex>
+                        </>
+                    )}
+                    {!open_chat?.is_group_chat && (
+                        <>
+                            <Flex
+                                margin='2rem 0 0 0'
+                                padding='1rem 0'
+                                borderRadius='10px'
+                                style={{
+                                    cursor: 'pointer',
+                                    backgroundColor: theme?.colors?.lightBackground,
+                                }}
+                                onClick={() =>
+                                    blockUser(
+                                        open_chat?.users?.filter(
+                                            (chatUser) => chatUser?._id !== user?._id
+                                        )?.[0]?._id,
+                                        isBlocked
+                                    )
+                                }
+                            >
+                                <Text
+                                    width='max-content'
+                                    color={theme?.colors?.constants?.danger?.medium}
+                                >
+                                    {isBlocked?.value ? 'Unblock' : 'Block'}{' '}
+                                    {getChatName({ logged_user: user, chat: open_chat })}
+                                </Text>
+                            </Flex>
+                            <Flex
+                                margin='1rem 0 0 0'
+                                padding='1rem 0'
+                                borderRadius='10px'
+                                style={{
+                                    cursor: 'pointer',
+                                    backgroundColor: theme?.colors?.lightBackground,
+                                }}
+                                onClick={() => deleteChat(open_chat?._id)}
+                            >
+                                <Text width='max-content' color={theme?.colors?.text}>
+                                    Erase & Delete Chat
+                                </Text>
+                            </Flex>
+                        </>
                     )}
                 </ChatParticipantsContainer>
             </ChatInfoBody>

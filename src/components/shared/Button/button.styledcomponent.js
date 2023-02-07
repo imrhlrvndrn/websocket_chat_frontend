@@ -19,6 +19,13 @@ export const StyledButton = styled.button`
 
     &:disabled {
         cursor: not-allowed;
+        color: ${(props) => props?.theme?.colors?.text};
+        background-color: ${(props) => props?.theme?.colors?.darkBackground};
+
+        &:hover {
+            color: ${(props) => props?.theme?.colors?.text};
+            background-color: ${(props) => props?.theme?.colors?.darkBackground};
+        }
     }
 
     &:hover {

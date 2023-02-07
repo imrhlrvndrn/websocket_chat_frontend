@@ -5,7 +5,6 @@ import { Flex, Text } from '../../../styled_components';
 import { InputField, InputContainer, PasswordFieldToggle } from './input.styledcomponent';
 
 // components
-import { Button } from '../Button/button.component';
 import { HideIcon, ShowIcon } from '../../../react_icons';
 
 export const Input = (props) => {

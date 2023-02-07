@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { searchUsers } from '../../../../http';
 import { useDebounce } from '../../../../hooks';
-import { useAuthentication, useChat, useTheme } from '../../../../context';
+import { useAuthentication, useChat, useModalManager, useTheme } from '../../../../context';
 
 // styles
 import { Flex, Text } from '../../../../styled_components';
@@ -12,6 +12,7 @@ import { CloseIcon } from '../../../../react_icons';
 
 export const AddMembers = ({ nextStep, previousStep }) => {
     const [{ theme }] = useTheme();
+    const { hideModal } = useModalManager();
     const [{ new_chat }, chatDispatch] = useChat();
     const [{ user }, authDispatch] = useAuthentication();
     const [search, setSearch] = useState({ query: '', results: [], loading: false });

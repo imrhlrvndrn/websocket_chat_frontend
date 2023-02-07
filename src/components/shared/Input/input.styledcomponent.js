@@ -24,7 +24,7 @@ export const InputField = styled.input`
     }
 
     &::placeholder {
-        /* color: ${(props) => props.theme.colors.text}; */
+        // color: ${(props) => props.theme.colors.text};
     }
 `;
 

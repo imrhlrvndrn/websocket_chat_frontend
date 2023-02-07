@@ -17,20 +17,16 @@ export const Email = ({ nextStep, previousStep }) => {
     return (
         <form
             onSubmit={() => {
-                // * 1. Send the email to the server
-                // * 2. Send an OTP to the email
                 authDispatch({
                     type: 'SET_NEW_USER',
                     payload: { ...new_user, email },
                 });
-                //      sendOtp(email);
-                // * 3. Redirect to the next step
-                console.log(`OTP sent to ${email}`);
                 nextStep();
             }}
         >
             <Flex direction='column'>
                 <Input
+                    autoFocus
                     value={email}
                     onChange={(event) => setEmail(() => event.target.value)}
                     type='email'
@@ -50,7 +46,7 @@ export const Email = ({ nextStep, previousStep }) => {
                                 margin='0 1rem 0 0'
                                 color={theme.colors.constants.lightText}
                             >
-                                Send OTP
+                                Set Password
                             </Text>
                             <ArrowRight size={30} />
                         </Flex>

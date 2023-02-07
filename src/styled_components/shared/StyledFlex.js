@@ -19,10 +19,10 @@ export const Flex = styled.div`
         ${(props) =>
             props?.hover &&
             css`
-                ${Object.keys(props?.hover).reduce((acc, key) => {
-                    console.log('HOver css => ', `${acc} ${key}: ${props?.hover[key]};`);
-                    return `${acc} ${key}: ${props?.hover[key]};`;
-                }, '')}
+                ${Object.keys(props?.hover).reduce(
+                    (acc, key) => `${acc} ${key}: ${props?.hover[key]};`,
+                    ''
+                )}
             `}
     }
 `;

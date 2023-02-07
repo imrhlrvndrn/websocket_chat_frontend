@@ -29,8 +29,23 @@ export const chatReducers = (state, action) => {
             return { ...state, user_chats: action?.payload };
         }
 
+        case 'SORT_CHATS': {
+            return {
+                ...state,
+                user_chats: action?.payload?.sort(
+                    (a, b) => Date.parse(b.updatedAt) - Date.parse(a?.updatedAt)
+                ),
+            };
+        }
+
         case 'SET_OPEN_CHAT': {
-            return { ...state, open_chat: action?.payload };
+            return {
+                ...state,
+                open_chat: action?.payload,
+                user_chats: state?.user_chats?.map((chat) =>
+                    chat?._id === action?.payload?._id ? action?.payload : chat
+                ),
+            };
         }
 
         default: {

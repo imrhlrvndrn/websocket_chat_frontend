@@ -5,9 +5,7 @@ export const StyledChatWindow = styled.div`
     position: relative;
     flex-direction: column;
     width: 75%;
-
-    .mainChat__header {
-    }
+    max-height: 100vh;
 `;
 
 export const ChatWindowHeader = styled.div`
@@ -25,14 +23,11 @@ export const ChatWindowHeader = styled.div`
 `;
 
 export const ChatWindowBody = styled.div`
-    // width: 100%;
     padding: 0 1rem;
     background-color: ${(props) => props.theme.colors.mediumBackground};
     overflow-y: auto;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     flex: 1;
 
     /* width */
@@ -57,6 +52,10 @@ export const ChatWindowBody = styled.div`
 `;
 
 export const ChatWindowMessageContainer = styled.div`
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // width: 100%;
     display: flex;
     align-items: center;
     padding: 1rem 1rem;
@@ -67,20 +66,27 @@ export const ChatWindowMessageContainer = styled.div`
         cursor: pointer;
         fill: ${(props) => props.theme.colors.icon};
     }
+
+    input {
+        &:focus,
+        &:hover {
+            border: none;
+        }
+    }
 `;
 
 export const ChatMessageInputForm = styled.form`
     flex: 1;
-    border-radius: 30px;
-    margin: 0 1rem;
-    /* padding: 0 0 0 1rem; */
-    background-color: ${(props) => props.theme.colors.mediumBackground};
     display: flex;
     align-items: center;
+    border-radius: 30px;
+    background-color: ${(props) => props.theme.colors.mediumBackground};
 
     input {
         background: transparent;
         flex: 1;
+        outline: none;
+        border: none;
     }
 
     button {

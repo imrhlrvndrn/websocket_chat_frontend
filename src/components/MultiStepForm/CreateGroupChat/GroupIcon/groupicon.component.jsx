@@ -46,10 +46,6 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
             arrayData.map((value) => this.append(name, value));
         };
         formData.append('name', name);
-        // formData.appendAnArrayOfData(
-        //     'users',
-        //     users.map((user) => user?._id)
-        // );
         formData.append('users', JSON.stringify(users));
         formData.append('uploadedFile', avatar?.raw);
         formData.append('group_admins', group_admins);
@@ -57,24 +53,18 @@ export const GroupIcon = ({ nextStep, previousStep }) => {
         formData.append('latest_message', latest_message);
         formData.append('action_type', 'CREATE_GROUP_CHAT');
 
-        console.log('Data before making request => ', formData);
-
         try {
             setIsActivationInProgress(() => true);
             const {
                 data: { success, data, toast },
             } = await createChat(formData);
 
-            console.log('new group => ', { success, data, toast });
-
             if (success) {
-                // ! Check if the data is properly structured
                 chatDispatch({ type: 'SET_USER_CHATS', payload: [...user_chats, data?.chat] });
             }
             nextStep(event, '/', {
                 title: { content: 'Group creation was successful!!', visible: true },
             });
-            // }
         } catch (error) {
             console.error(error);
         } finally {

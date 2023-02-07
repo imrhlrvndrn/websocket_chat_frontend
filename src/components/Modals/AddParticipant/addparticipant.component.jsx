@@ -95,11 +95,17 @@ export const AddParticipant = () => {
             } = await execChatOperation({
                 chatId: open_chat?._id,
                 action: 'add-user',
-                data: { new_members: newMembers?.map((user) => user?._id) },
+                data: { new_members: newMembers },
             });
             if (success) {
                 //! Implement a false lie mechanism since the response doesn't contain necessary data
                 // ! to display on the UI
+                console.log('upated chat users => ', data);
+                chatDispatch({
+                    type: 'SET_OPEN_CHAT',
+                    payload: { ...open_chat, users: data?.chat?.users },
+                });
+                hideModal();
             }
         } catch (error) {
             console.error(error);

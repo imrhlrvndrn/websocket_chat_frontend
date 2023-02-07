@@ -3,4 +3,4 @@ export const extractFontSize = (size = 'body/large', theme) => {
     return theme.fonts.size[category][categorySize];
 };
 
-export { getChatAvatar, getChatName } from './chat.utils';
+export { getChatAvatar, getChatName, isUserBlocked } from './chat.utils';

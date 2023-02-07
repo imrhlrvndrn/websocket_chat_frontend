@@ -9,7 +9,7 @@ import { ArrowRight } from '../../../react_icons';
 import { Button, PasswordField, PasswordStrengthBar } from '../..';
 
 export const Password = ({ nextStep, previousStep }) => {
-    const [{ new_user }] = useAuthentication();
+    const [{ new_user }, authDispatch] = useAuthentication();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -27,12 +27,15 @@ export const Password = ({ nextStep, previousStep }) => {
     return (
         <form
             onSubmit={() => {
-                // 1. Send Email & Password to server
-                // 2. If success, Log in the user
+                authDispatch({
+                    type: 'SET_NEW_USER',
+                    payload: { ...new_user, password: { ...new_user?.password, value: password } },
+                });
                 nextStep();
             }}
         >
             <PasswordField
+                autoFocus
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder='Enter your password'

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export default styled.div`
+    position: relative;
     margin-bottom: 0.5rem;
     margin-left: ${(props) => (props?.selfMessage ? 'auto' : '0')};
     padding: 1rem;
@@ -27,6 +28,7 @@ export default styled.div`
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        margin-top: 1rem;
 
         p {
             font-size: 0.8rem;
@@ -36,8 +38,18 @@ export default styled.div`
         }
 
         svg {
-            opacity: 0.8;
             margin-left: 1rem;
+        }
+
+        .delete {
+            visibility: hidden;
+            cursor: pointer;
+        }
+    }
+
+    &:hover {
+        .delete {
+            visibility: visible;
         }
     }
 `;

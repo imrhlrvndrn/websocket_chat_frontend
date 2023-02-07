@@ -5,7 +5,11 @@ export default styled.div`
     flex-direction: column;
     width: 25%;
 
-    .sidebar__header {
+    @media ${(props) => props?.theme?.breakpoints?.lg_tablet} {
+        width: 100%;
+    }
+
+    .sidebarHeader {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -14,12 +18,16 @@ export default styled.div`
         height: max-content;
         background-color: ${(props) => props.theme.colors.darkBackground};
 
-        &__icons {
-            svg {
-                cursor: pointer;
-                margin-left: 2rem;
-                fill: ${(props) => props.theme.colors.icon};
-            }
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            cursor: pointer;
+            margin-right: 2rem;
+            fill: ${(props) => props.theme.colors.icon};
         }
     }
 

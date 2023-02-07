@@ -1,19 +1,18 @@
 import lottie from 'lottie-web';
 import { useEffect, useRef } from 'react';
+import { useModalManager } from '../../../../context';
 
 // styled components
 import { Flex } from '../../../../styled_components';
 
 // components
-import { Modal, Button, Input } from '../../..';
-import success_animation from '../../../../utils/animations/success.json';
+import { Modal } from '../../..';
 
 export const SuccessStep = ({ title = { content: 'Operation successful!', visible: true } }) => {
     const animationRef = useRef();
+    const { hideModal } = useModalManager();
 
     useEffect(() => {
-        console.log('creating animation instance...');
-
         const animationInstance = lottie.loadAnimation({
             loop: true,
             autoplay: true,
@@ -22,23 +21,18 @@ export const SuccessStep = ({ title = { content: 'Operation successful!', visibl
             path: 'https://assets5.lottiefiles.com/packages/lf20_wkebwzpz.json',
         });
 
-        console.log('animation instance => ', animationInstance);
         animationInstance.play();
         animationInstance.setSpeed(1);
+
+        setTimeout(() => {
+            hideModal();
+        }, 3000);
 
         return () => animationInstance.destroy();
     }, []);
 
     return (
         <Modal title={{ content: title?.content, visible: title?.visible }}>
-            {/* <form
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    nextStep();
-                }}
-            >
-                <Button type='submit'>Close</Button>
-            </form> */}
             <Flex height='300px' margin='0 auto' ref={animationRef}></Flex>
         </Modal>
     );

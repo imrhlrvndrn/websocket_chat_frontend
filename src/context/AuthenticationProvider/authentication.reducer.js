@@ -6,11 +6,6 @@ export const initialAuthState = {
         username: '',
         full_name: '',
     },
-    otp: {
-        phone: '',
-        email: '',
-        hashedOtp: '',
-    },
     new_user: {
         full_name: '',
         avatar: '',
@@ -27,18 +22,6 @@ export const authenticationReducers = (state, action) => {
             localStorage.setItem('user', JSON.stringify(user));
 
             return { ...state, user };
-        }
-
-        case 'SET_OTP': {
-            const { email, hashedOtp } = action.payload;
-
-            return {
-                ...state,
-                otp: {
-                    email,
-                    hashedOtp,
-                },
-            };
         }
 
         case 'SET_NEW_USER': {

@@ -3,7 +3,7 @@ import { darkTheme, lightTheme } from '../../styled_components';
 export const initialThemeState = {
     theme: {
         breakpoints: {
-            lg_tablet: 'screen and (max-width: 1024px)',
+            lg_tablet: 'screen and (max-width: 1200px)',
             tablet: 'screen and (max-width: 770px)',
             mobile: 'screen and (max-width: 510px)',
             sm_mobile: 'screen and (max-width: 350px)',

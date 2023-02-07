@@ -28,6 +28,7 @@ export const StepName = ({ nextStep, previousStep }) => {
                 <CardContent>
                     <form onSubmit={saveAndContinue}>
                         <Input
+                            autoFocus
                             value={name}
                             onChange={(event) => setName(() => event.target.value)}
                             placeholder='Enter your full name'

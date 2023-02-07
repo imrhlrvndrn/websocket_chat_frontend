@@ -74,7 +74,19 @@ export const Login = ({ tabs, switchTab }) => {
                             placeholder='Enter your password'
                         />
                         <Flex>
-                            <Button variant='secondary' type='button' onClick={() => navigate(-1)}>
+                            <Button
+                                variant='secondary'
+                                type='button'
+                                onClick={() => {
+                                    setEmail(
+                                        (prevState) => process.env.REACT_APP_TEST_CREDENTIAL_EMAIL
+                                    );
+                                    setPassword(
+                                        (prevState) =>
+                                            process.env.REACT_APP_TEST_CREDENTIAL_PASSWORD
+                                    );
+                                }}
+                            >
                                 Login as Guest
                             </Button>
                             <Button

@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const axios = Axios.create({
-    baseURL: process.env.REACT_APP_API_ENDPOINT || 'http://localhost:4000',
+    baseURL: process.env.REACT_APP_API_ENDPOINT,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -23,8 +23,9 @@ export const getRooms = () => axios.get('/api/rooms');
 
 export const loginUser = ({ email, password }) =>
     axios.post('/api/auth/login', { email, password });
+export const registerUser = (data) => axios.post('/api/auth/register', data);
 export const refreshToken = () => axios.get('/api/auth/refresh');
-export const logoutUser = (data) => axios.post('/api/auth/logout', data);
+export const logoutUser = (data = {}) => axios.post('/api/auth/logout', data);
 export const searchUsers = (searchTerm) => axios.get(`/api/user/search?query=${searchTerm}`);
 export const getUser = (userId) => axios.get(`/api/user/${userId}`);
 export const getUserChats = (userId) => axios.get(`/api/user/${userId}/chats`);
@@ -35,33 +36,35 @@ export const execChatOperation = ({ chatId = '', action = '', data = {} }) =>
 export const getMessages = (chat_id = '') => axios.get(`/api/message/${chat_id}`);
 export const execMessageOperation = ({ chat_id = '', action = '', data = {} }) =>
     axios.post(`/api/message/${chat_id}/${action}`, data);
+export const userBlocking = (user_id, block_type) =>
+    axios.post(`/api/user/${block_type}`, { user_id });
 
 // Interceptors
-axios.interceptors.response.use(
-    (config) => config,
-    async (error) => {
-        const originalReq = error.config;
-        console.log('Interceptor error => ', error.response.data.message);
-        if (error.response.status === 401 && originalReq && !originalReq._isRetry) {
-            originalReq._isRetry = true;
-            try {
-                await Axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/auth/refresh`, {
-                    withCredentials: true,
-                });
+// axios.interceptors.response.use(
+//     (config) => config,
+//     async (error) => {
+//         const originalReq = error.config;
+//         console.log('Interceptor error => ', error.response.data.message);
+//         if (error.response.status === 401 && originalReq && !originalReq._isRetry) {
+//             originalReq._isRetry = true;
+//             try {
+//                 await Axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/auth/refresh`, {
+//                     withCredentials: true,
+//                 });
 
-                return axios.request(originalReq);
-            } catch (error) {
-                window.location.replace('/authenticate');
-                console.log(error);
-            }
-        } else if (error.response.status === 401 && originalReq._isRetry) {
-            await Axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/auth/logout`, {
-                withCredentials: true,
-            });
-            window.location.replace('/authenticate');
-        }
-        throw error;
-    }
-);
+//                 return axios.request(originalReq);
+//             } catch (error) {
+//                 window.location.replace('/authenticate');
+//                 console.log(error);
+//             }
+//         } else if (error.response.status === 401 && originalReq._isRetry) {
+//             await Axios.post(`${process.env.REACT_APP_API_ENDPOINT}/api/auth/logout`, {
+//                 withCredentials: true,
+//             });
+//             window.location.replace('/authenticate');
+//         }
+//         throw error;
+//     }
+// );
 
 export default axios;

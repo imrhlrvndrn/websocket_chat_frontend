@@ -16,3 +16,5 @@ export { OptionUnchecked } from './OptionUnchecked';
 export { OptionChecked } from './OptionChecked';
 export { InfoIcon } from './InfoIcon';
 export { NewGroupIcon } from './NewGroupIcon';
+export { DeleteIcon } from './DeleteIcon';
+export { LogoutIcon } from './LogoutIcon';

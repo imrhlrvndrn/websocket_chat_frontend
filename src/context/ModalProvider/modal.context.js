@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 // components
 import {
@@ -54,6 +54,15 @@ export const ModalProvider = ({ children }) => {
         }
         return <ModalComponent id='global-modal' {...props} />;
     };
+
+    useEffect(() => {
+        window.addEventListener('keydown', (event) => event?.key === 'Escape' && hideModal());
+        return () =>
+            window.removeEventListener(
+                'keydown',
+                (event) => event?.key === 'Escape' && hideModal()
+            );
+    }, []);
 
     return (
         <ModalContext.Provider value={{ showModal, hideModal, modal }}>

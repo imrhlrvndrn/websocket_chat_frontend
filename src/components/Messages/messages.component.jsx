@@ -3,7 +3,7 @@ import { useAuthentication } from '../../context';
 // import moment from 'moment';
 
 // React icons
-import { ReadIcon } from '../../react_icons';
+import { DeleteIcon, ReadIcon } from '../../react_icons';
 import { Flex, Text } from '../../styled_components';
 
 // Styled components
@@ -19,13 +19,6 @@ export const Messages = ({ message }) => {
 
     const isSelfMessage = () => message?.sender?._id === user?._id;
 
-    console.log('The message comp => ', message);
-
-    // return (
-    //     <div>
-    //         <Text>message sent/received by the user {message}</Text>
-    //     </div>
-    // );
     return (
         <StyledMessages selfMessage={isSelfMessage()} read={read} className={`messageContainer`}>
             <Flex justify='flex-start'>
@@ -52,10 +45,9 @@ export const Messages = ({ message }) => {
             </Flex>
             <p className='message'>{message?.content}</p>
             <div className='timestamp'>
-                {/* <p>{moment(new Date(message?.data?.timestamp?.toDate())).format('hh:mm A')}</p> */}
-                {isSelfMessage() && <ReadIcon fill='black' width='20px' height='20px' />}
+                {isSelfMessage() && <DeleteIcon size={22} className='delete' color='whitesmoke' />}
+                {/* {isSelfMessage() && <ReadIcon fill='black' width='20px' height='20px' />} */}
             </div>
-            {/* <ContextMenu menu={['Delete', 'Reply', 'Edit']} /> */}
         </StyledMessages>
     );
 };
