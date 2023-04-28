@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookie from 'js-cookie';
 
 // components
 import { loginUser } from '../../../http';
@@ -28,6 +29,7 @@ export const Login = ({ tabs, switchTab }) => {
             // 2. If success, Log in the user
             if (success) {
                 authDispatch({ type: 'SET_USER', payload: { user: data.user } });
+                Cookie.set('X_CHATAPP_ACCESSTOKEN', data.tokens.accessToken);
                 navigate('/', { replace: true });
             }
         } catch (error) {
